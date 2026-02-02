@@ -23,6 +23,8 @@ zathura-pdf-mupdf
 htop
 bluetui
 calcurse
+gnome-themes-extra
+adwaita-icon-theme
 pipewire
 pipewire-audio
 pipewire-pulse

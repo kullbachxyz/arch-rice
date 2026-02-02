@@ -7,6 +7,30 @@ AUR_LIST="$ROOT_DIR/packages/aur.txt"
 SRC_DIR="${HOME}/.local/src"
 LOG_FILE="${HOME}/arch-rice-install-$(date +%Y%m%d%H%M%S).log"
 
+bootstrap_repo() {
+  if [[ -f "$PACMAN_LIST" && -f "$AUR_LIST" ]]; then
+    return 0
+  fi
+
+  if [[ -n "${ARCH_RICE_BOOTSTRAPPED:-}" ]]; then
+    echo "Bootstrap failed: package lists not found." >&2
+    exit 1
+  fi
+
+  local tmpdir
+  tmpdir="$(mktemp -d)"
+  if command -v git >/dev/null 2>&1; then
+    git clone https://github.com/kullbachxyz/arch-rice.git "$tmpdir/arch-rice"
+  else
+    curl -L -o "$tmpdir/arch-rice.tar.gz" \
+      https://github.com/kullbachxyz/arch-rice/archive/refs/heads/main.tar.gz
+    tar -xzf "$tmpdir/arch-rice.tar.gz" -C "$tmpdir"
+    mv "$tmpdir/arch-rice-main" "$tmpdir/arch-rice"
+  fi
+
+  ARCH_RICE_BOOTSTRAPPED=1 exec "$tmpdir/arch-rice/install.sh"
+}
+
 log() {
   printf '[%s] %s\n' "$(date +%Y-%m-%dT%H:%M:%S%z)" "$*"
 }
@@ -168,6 +192,7 @@ set_default_shell() {
 }
 
 main() {
+  bootstrap_repo
   setup_logging
   preflight
   keep_sudo_alive

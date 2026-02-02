@@ -22,10 +22,15 @@ bootstrap_repo() {
   if command -v git >/dev/null 2>&1; then
     git clone https://github.com/kullbachxyz/arch-rice.git "$tmpdir/arch-rice"
   else
+    if command -v pacman >/dev/null 2>&1; then
+      sudo pacman -Sy --noconfirm git
+      git clone https://github.com/kullbachxyz/arch-rice.git "$tmpdir/arch-rice"
+    else
     curl -L -o "$tmpdir/arch-rice.tar.gz" \
       https://github.com/kullbachxyz/arch-rice/archive/refs/heads/main.tar.gz
     tar -xzf "$tmpdir/arch-rice.tar.gz" -C "$tmpdir"
     mv "$tmpdir/arch-rice-main" "$tmpdir/arch-rice"
+    fi
   fi
 
   ARCH_RICE_BOOTSTRAPPED=1 exec "$tmpdir/arch-rice/install.sh"

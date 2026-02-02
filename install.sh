@@ -6,6 +6,7 @@ PACMAN_LIST="$ROOT_DIR/packages/pacman.txt"
 AUR_LIST="$ROOT_DIR/packages/aur.txt"
 SRC_DIR="${HOME}/.local/src"
 LOG_FILE="${HOME}/arch-rice-install-$(date +%Y%m%d%H%M%S).log"
+SUDOERS_TEMP_FILE="/etc/sudoers.d/arch-rice-temp"
 
 bootstrap_repo() {
   if [[ -f "$PACMAN_LIST" && -f "$AUR_LIST" ]]; then
@@ -82,6 +83,35 @@ keep_sudo_alive() {
     sleep 60
     kill -0 "$$" || exit
   done 2>/dev/null &
+}
+
+enable_temp_nopasswd() {
+  if [[ "$(id -u)" -eq 0 ]]; then
+    return 0
+  fi
+
+  if ! command -v sudo >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if [[ -f "$SUDOERS_TEMP_FILE" ]]; then
+    return 0
+  fi
+
+  log "Enabling temporary NOPASSWD for current user."
+  echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee "$SUDOERS_TEMP_FILE" >/dev/null
+  sudo chmod 440 "$SUDOERS_TEMP_FILE"
+}
+
+disable_temp_nopasswd() {
+  if [[ "$(id -u)" -eq 0 ]]; then
+    return 0
+  fi
+
+  if [[ -f "$SUDOERS_TEMP_FILE" ]]; then
+    log "Removing temporary NOPASSWD sudoers file."
+    sudo rm -f "$SUDOERS_TEMP_FILE"
+  fi
 }
 
 ensure_pacman_packages() {
@@ -200,6 +230,7 @@ main() {
   bootstrap_repo
   setup_logging
   preflight
+  enable_temp_nopasswd
   keep_sudo_alive
   ensure_pacman_packages
   ensure_yay
@@ -207,6 +238,7 @@ main() {
   setup_dotfiles
   build_suckless
   set_default_shell
+  disable_temp_nopasswd
 
   log "Done. Use .xinitrc + startx as desired."
 }

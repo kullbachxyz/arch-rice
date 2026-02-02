@@ -224,6 +224,126 @@ setup_mpd_dirs() {
   touch "${HOME}/.config/mpd/database"
 }
 
+setup_librewolf_hardening() {
+  if ! command -v librewolf >/dev/null 2>&1; then
+    log "LibreWolf not found; skipping hardening."
+    return 0
+  fi
+
+  local arkenfox_url="https://raw.githubusercontent.com/arkenfox/user.js/master/user.js"
+  local larbs_url="https://raw.githubusercontent.com/LukeSmithxyz/voidrice/refs/heads/master/.config/firefox/larbs.js"
+  local profiles_dir="${HOME}/.librewolf"
+  local profiles_ini="${profiles_dir}/profiles.ini"
+  local policy_file="/usr/lib/librewolf/distribution/policies.json"
+
+  log "Ensuring LibreWolf profile exists..."
+  librewolf --headless >/dev/null 2>&1 &
+  local lw_pid=$!
+
+  for _ in {1..50}; do
+    if [[ -f "$profiles_ini" ]]; then
+      break
+    fi
+    sleep 0.1
+  done
+
+  if [[ ! -f "$profiles_ini" ]]; then
+    log "LibreWolf profile not found; skipping hardening."
+    kill "$lw_pid" 2>/dev/null || true
+    return 0
+  fi
+
+  local profile_rel
+  profile_rel="$(sed -n 's/^Path=\\(.*\\.default-default\\)$/\\1/p' \"$profiles_ini\" | head -n 1)"
+
+  if [[ -z "$profile_rel" ]]; then
+    log "LibreWolf default profile not found; skipping hardening."
+    kill "$lw_pid" 2>/dev/null || true
+    return 0
+  fi
+
+  local profile_path="${profiles_dir}/${profile_rel}"
+  if [[ ! -d "$profile_path" ]]; then
+    log "LibreWolf profile path missing; skipping hardening."
+    kill "$lw_pid" 2>/dev/null || true
+    return 0
+  fi
+
+  log "Applying LibreWolf hardening to ${profile_path}."
+
+  if [[ -f "$profile_path/user.js" ]]; then
+    mv "$profile_path/user.js" "$profile_path/user.js.bak_$(date +%F_%T)"
+  fi
+
+  if ! curl -fsSL "$arkenfox_url" -o "$profile_path/user.js"; then
+    log "Failed to download arkenfox user.js; skipping hardening."
+    kill "$lw_pid" 2>/dev/null || true
+    return 0
+  fi
+
+  local tmp_larbs
+  tmp_larbs="$(mktemp)"
+  if ! curl -fsSL "$larbs_url" -o "$tmp_larbs"; then
+    log "Failed to download larbs.js; skipping hardening."
+    rm -f "$tmp_larbs"
+    kill "$lw_pid" 2>/dev/null || true
+    return 0
+  fi
+
+  cp "$tmp_larbs" "$profile_path/larbs.js"
+  printf '\n\n// ===== LARBS OVERRIDES (appended after arkenfox) =====\n\n' >> "$profile_path/user.js"
+  cat "$tmp_larbs" >> "$profile_path/user.js"
+  rm -f "$tmp_larbs"
+
+  cat >> "$profile_path/user.js" << 'EOF'
+
+// ===== DARK MODE FINGERPRINTING TWEAKS =====
+// Allow sites to see prefers-color-scheme while keeping FPP
+user_pref("privacy.resistFingerprinting", false);
+user_pref("privacy.fingerprintingProtection", true);
+user_pref("privacy.fingerprintingProtection.overrides", "+AllTargets,-CSSPrefersColorScheme");
+
+// ===== UI TWEAKS =====
+
+// Disable the previous session restore prompt
+user_pref("browser.sessionstore.resume_from_crash", true);
+user_pref("browser.sessionstore.restore_on_demand", false);
+user_pref("browser.sessionstore.restore_tabs_lazily", false);
+
+EOF
+
+  if command -v jq >/dev/null 2>&1 && [[ -f "$policy_file" ]]; then
+    local backup="${policy_file}.bak_$(date +%F_%T)"
+    sudo cp "$policy_file" "$backup"
+
+    sudo jq '
+      .policies.ExtensionSettings = (.policies.ExtensionSettings // {}) |
+      .policies.ExtensionSettings["jid1-BoFifL9Vbdl2zQ@jetpack"] = {
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/decentraleyes/latest.xpi",
+        "installation_mode": "normal_installed"
+      } |
+      .policies.ExtensionSettings["idcac-pub@guus.ninja"] = {
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/istilldontcareaboutcookies/latest.xpi",
+        "installation_mode": "normal_installed"
+      } |
+      .policies.ExtensionSettings["uBlock0@raymondhill.net"] = {
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi",
+        "installation_mode": "normal_installed"
+      } |
+      .policies.ExtensionSettings["{d7742d87-e61d-4b78-b8a1-b469842139fa}"] = {
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/vimium-ff/latest.xpi",
+        "installation_mode": "normal_installed"
+      }
+    ' "$policy_file" | sudo tee "$policy_file.tmp" >/dev/null
+
+    sudo mv "$policy_file.tmp" "$policy_file"
+  else
+    log "policies.json not found or jq missing; skipping extension policies."
+  fi
+
+  pkill -u "$USER" librewolf >/dev/null 2>&1 || true
+  kill "$lw_pid" 2>/dev/null || true
+}
 set_default_shell() {
   if command -v zsh >/dev/null 2>&1; then
     if [[ "${SHELL:-}" != "/bin/zsh" ]]; then
@@ -247,6 +367,7 @@ main() {
   ensure_aur_packages
   setup_dotfiles
   setup_mpd_dirs
+  setup_librewolf_hardening
   build_suckless
   set_default_shell
   disable_temp_nopasswd

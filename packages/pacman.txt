@@ -3,6 +3,7 @@ curl
 git
 go
 acpi
+jq
 xorg-server
 xorg-xinit
 xorg-xrandr

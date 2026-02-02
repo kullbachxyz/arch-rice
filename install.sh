@@ -221,7 +221,11 @@ setup_dotfiles() {
 set_default_shell() {
   if command -v zsh >/dev/null 2>&1; then
     if [[ "${SHELL:-}" != "/bin/zsh" ]]; then
-      chsh -s /bin/zsh
+      if command -v chsh >/dev/null 2>&1; then
+        sudo chsh -s /bin/zsh "$USER"
+      elif command -v usermod >/dev/null 2>&1; then
+        sudo usermod -s /bin/zsh "$USER"
+      fi
     fi
   fi
 }
@@ -241,6 +245,7 @@ main() {
   disable_temp_nopasswd
 
   log "Done. Use .xinitrc + startx as desired."
+  log "Note: log out and back in for the default shell change to take effect."
 }
 
 main "$@"

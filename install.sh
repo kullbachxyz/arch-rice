@@ -218,6 +218,12 @@ setup_dotfiles() {
   git --git-dir="$git_dir" --work-tree="$work_tree" config --local status.showUntrackedFiles no
 }
 
+setup_mpd_dirs() {
+  mkdir -p "${HOME}/music"
+  mkdir -p "${HOME}/.config/mpd"
+  touch "${HOME}/.config/mpd/database"
+}
+
 set_default_shell() {
   if command -v zsh >/dev/null 2>&1; then
     if [[ "${SHELL:-}" != "/bin/zsh" ]]; then
@@ -240,6 +246,7 @@ main() {
   ensure_yay
   ensure_aur_packages
   setup_dotfiles
+  setup_mpd_dirs
   build_suckless
   set_default_shell
   disable_temp_nopasswd

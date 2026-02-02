@@ -15,6 +15,7 @@ freetype2
 fontconfig
 dunst
 beets
+mpd
 ncmpcpp
 zathura
 zathura-pdf-mupdf

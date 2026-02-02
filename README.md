@@ -17,3 +17,7 @@ Check installed packages only:
 ```bash
 ./scripts/check-installed.sh
 ```
+
+## TODO
+- Audit dmenu fork: ensure `make install` consistently installs all expected scripts (e.g. `dmenu_path`, `dmenu_run`) or adjust install logic upstream.
+- Add temporary NOPASSWD sudoers option for fully unattended installs.

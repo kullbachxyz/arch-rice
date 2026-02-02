@@ -111,7 +111,22 @@ build_suckless() {
 
     pushd "$SRC_DIR/$name" >/dev/null
     make clean
-    sudo make install
+    if [[ "$name" == "dmenu" ]]; then
+      make
+      if ! sudo make install; then
+        log "dmenu make install failed; installing binaries manually."
+        sudo install -m 755 dmenu /usr/local/bin/dmenu
+        sudo install -m 755 stest /usr/local/bin/stest
+        if [[ -f dmenu_path ]]; then
+          sudo install -m 755 dmenu_path /usr/local/bin/dmenu_path
+        fi
+        if [[ -f dmenu_run ]]; then
+          sudo install -m 755 dmenu_run /usr/local/bin/dmenu_run
+        fi
+      fi
+    else
+      sudo make install
+    fi
     popd >/dev/null
   done
 }

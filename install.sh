@@ -86,7 +86,7 @@ ensure_aur_packages() {
   fi
 
   if [[ -s "$AUR_LIST" ]]; then
-    yay -S --needed --noconfirm $(grep -Ev '^\s*#|^\s*$' "$AUR_LIST")
+    yay -S --needed --noconfirm --sudoloop $(grep -Ev '^\s*#|^\s*$' "$AUR_LIST")
   fi
 }
 

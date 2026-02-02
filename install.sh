@@ -251,10 +251,11 @@ IsRelative=1
 Path=${default_profile}
 Default=1
 EOF
+    log "Created LibreWolf profile at ${profiles_dir}/${default_profile}."
   fi
 
   local profile_rel
-  profile_rel="$(sed -n 's/^Path=\\(.*\\.default-default\\)$/\\1/p' \"$profiles_ini\" | head -n 1)"
+  profile_rel="$(sed -n 's/^Path=\(.*\.default-default\)$/\1/p' "$profiles_ini" | head -n 1)"
 
   if [[ -z "$profile_rel" ]]; then
     log "LibreWolf default profile not found; skipping hardening."

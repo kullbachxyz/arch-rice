@@ -2,6 +2,7 @@ base-devel
 curl
 git
 go
+acpi
 xorg-server
 xorg-xinit
 xorg-xrandr
@@ -16,6 +17,9 @@ beets
 ncmpcpp
 zathura
 zathura-pdf-mupdf
+htop
+bluetui
+calcurse
 pipewire
 pipewire-audio
 pipewire-pulse

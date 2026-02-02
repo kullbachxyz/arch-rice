@@ -237,20 +237,20 @@ setup_librewolf_hardening() {
   local policy_file="/usr/lib/librewolf/distribution/policies.json"
 
   log "Ensuring LibreWolf profile exists..."
-  librewolf --headless >/dev/null 2>&1 &
-  local lw_pid=$!
-
-  for _ in {1..50}; do
-    if [[ -f "$profiles_ini" ]]; then
-      break
-    fi
-    sleep 0.1
-  done
-
   if [[ ! -f "$profiles_ini" ]]; then
-    log "LibreWolf profile not found; skipping hardening."
-    kill "$lw_pid" 2>/dev/null || true
-    return 0
+    mkdir -p "$profiles_dir"
+    local default_profile="default.default-default"
+    mkdir -p "${profiles_dir}/${default_profile}"
+    cat > "$profiles_ini" << EOF
+[General]
+StartWithLastProfile=1
+
+[Profile0]
+Name=default
+IsRelative=1
+Path=${default_profile}
+Default=1
+EOF
   fi
 
   local profile_rel
@@ -258,14 +258,12 @@ setup_librewolf_hardening() {
 
   if [[ -z "$profile_rel" ]]; then
     log "LibreWolf default profile not found; skipping hardening."
-    kill "$lw_pid" 2>/dev/null || true
     return 0
   fi
 
   local profile_path="${profiles_dir}/${profile_rel}"
   if [[ ! -d "$profile_path" ]]; then
     log "LibreWolf profile path missing; skipping hardening."
-    kill "$lw_pid" 2>/dev/null || true
     return 0
   fi
 
@@ -342,7 +340,6 @@ EOF
   fi
 
   pkill -u "$USER" librewolf >/dev/null 2>&1 || true
-  kill "$lw_pid" 2>/dev/null || true
 }
 set_default_shell() {
   if command -v zsh >/dev/null 2>&1; then

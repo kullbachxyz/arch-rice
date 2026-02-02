@@ -19,5 +19,5 @@ Check installed packages only:
 ```
 
 ## TODO
-- Audit dmenu fork: ensure `make install` consistently installs all expected scripts (e.g. `dmenu_path`, `dmenu_run`) or adjust install logic upstream.
-- Add temporary NOPASSWD sudoers option for fully unattended installs.
+- (done) Ensure dmenu fork includes `dmenu_path` and `dmenu_run` (commit scripts so `make install` works cleanly on fresh systems).
+- (done) Temporary NOPASSWD sudoers option for fully unattended installs.

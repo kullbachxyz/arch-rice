@@ -26,3 +26,4 @@ Check installed packages only:
 - Add `.config/shell/aliasrc`.
 - Decide on `.xprofile` vs `.zprofile` for environment exports.
 - Fix keyring issue (important).
+- Prevent double-start of mpd (user service vs `.xinitrc`) in all contexts.

@@ -226,6 +226,19 @@ setup_mpd_dirs() {
   touch "${HOME}/.config/mpd/database"
 }
 
+disable_mpd_user_service() {
+  if ! command -v systemctl >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if systemctl --user list-unit-files >/dev/null 2>&1; then
+    systemctl --user disable --now mpd.service >/dev/null 2>&1 || true
+    log "mpd user service disabled (if it was enabled)."
+  else
+    log "systemctl --user not available; skipping mpd disable."
+  fi
+}
+
 setup_librewolf_hardening() {
   if ! command -v librewolf >/dev/null 2>&1; then
     log "LibreWolf not found; skipping hardening."
@@ -368,6 +381,7 @@ main() {
   ensure_aur_packages
   setup_dotfiles
   setup_mpd_dirs
+  disable_mpd_user_service
   setup_librewolf_hardening
   build_suckless
   set_default_shell

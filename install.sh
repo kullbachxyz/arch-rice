@@ -7,6 +7,7 @@ AUR_LIST="$ROOT_DIR/packages/aur.txt"
 SRC_DIR="${HOME}/.local/src"
 LOG_FILE="${HOME}/arch-rice-install-$(date +%Y%m%d%H%M%S).log"
 SUDOERS_TEMP_FILE="/etc/sudoers.d/arch-rice-temp"
+TEMP_NOPASSWD_ENABLED=0
 
 bootstrap_repo() {
   if [[ -f "$PACMAN_LIST" && -f "$AUR_LIST" ]]; then
@@ -101,6 +102,7 @@ enable_temp_nopasswd() {
   log "Enabling temporary NOPASSWD for current user."
   echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee "$SUDOERS_TEMP_FILE" >/dev/null
   sudo chmod 440 "$SUDOERS_TEMP_FILE"
+  TEMP_NOPASSWD_ENABLED=1
 }
 
 disable_temp_nopasswd() {
@@ -108,7 +110,7 @@ disable_temp_nopasswd() {
     return 0
   fi
 
-  if [[ -f "$SUDOERS_TEMP_FILE" ]]; then
+  if [[ "$TEMP_NOPASSWD_ENABLED" -eq 1 && -f "$SUDOERS_TEMP_FILE" ]]; then
     log "Removing temporary NOPASSWD sudoers file."
     sudo rm -f "$SUDOERS_TEMP_FILE"
   fi
@@ -358,6 +360,7 @@ main() {
   bootstrap_repo
   setup_logging
   preflight
+  trap disable_temp_nopasswd EXIT INT TERM
   enable_temp_nopasswd
   keep_sudo_alive
   ensure_pacman_packages

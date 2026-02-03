@@ -25,6 +25,7 @@ bluetui
 calcurse
 gnome-themes-extra
 adwaita-icon-theme
+qt6ct
 pipewire
 pipewire-audio
 pipewire-pulse

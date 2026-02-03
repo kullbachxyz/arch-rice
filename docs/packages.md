@@ -30,6 +30,7 @@ Short descriptions of what gets installed.
 | mpd | music daemon |
 | ncmpcpp | MPD client |
 | zathura | PDF viewer |
+| ttf-dejavu | proper emoji support |
 | zathura-pdf-mupdf | PDF backend for zathura |
 | htop | process viewer |
 | bluetui | Bluetooth TUI |

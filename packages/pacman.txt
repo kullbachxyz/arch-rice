@@ -23,6 +23,7 @@ dunst
 beets
 mpd
 ncmpcpp
+ttf-dejavu
 zathura
 zathura-pdf-mupdf
 htop

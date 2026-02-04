@@ -422,6 +422,7 @@ main() {
   setup_dotfiles
   setup_mpd_dirs
   setup_keyring_pam
+  bootstrap_keyring
   disable_mpd_user_service
   setup_librewolf_hardening
   build_suckless

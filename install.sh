@@ -254,30 +254,6 @@ PAMEOF
 
 }
 
-bootstrap_keyring() {
-  # Create the "login" keyring collection if it doesn't exist.
-  # This is required for Electron apps (Element, VS Code, etc.) to store secrets.
-  # Without this, gnome-keyring may be running but have no default collection.
-  #
-  # Skip if no D-Bus session (e.g., fresh install without X running).
-  # User can run this manually after first login+startx if needed.
-  if [[ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]]; then
-    log "No D-Bus session available; skipping keyring bootstrap."
-    log "Run 'secret-tool store --label=\"bootstrap\" bootstrap archrice <<< bootstrap' after first startx if needed."
-    return 0
-  fi
-
-  if ! secret-tool lookup bootstrap archrice >/dev/null 2>&1; then
-    log "Bootstrapping gnome-keyring login collection..."
-    log "You may be prompted to set a password for the new keyring."
-    log "Use your LOGIN PASSWORD so it auto-unlocks on TTY login."
-    secret-tool store --label='arch-rice bootstrap' bootstrap archrice <<< "bootstrap" || {
-      log "Keyring bootstrap failed (no GUI?). Run manually after first startx."
-      return 0
-    }
-  fi
-}
-
 disable_mpd_user_service() {
   if ! command -v systemctl >/dev/null 2>&1; then
     return 0
@@ -434,7 +410,6 @@ main() {
   setup_dotfiles
   setup_mpd_dirs
   setup_keyring_pam
-  bootstrap_keyring
   disable_mpd_user_service
   setup_librewolf_hardening
   build_suckless

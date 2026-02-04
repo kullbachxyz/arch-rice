@@ -24,6 +24,7 @@ beets
 mpd
 ncmpcpp
 ttf-dejavu
+noto-fonts-emoji
 zathura
 zathura-pdf-mupdf
 htop

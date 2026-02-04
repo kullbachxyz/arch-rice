@@ -21,10 +21,12 @@ Check installed packages only:
 ## TODO
 - (done) Ensure dmenu fork includes `dmenu_path` and `dmenu_run` (commit scripts so `make install` works cleanly on fresh systems).
 - (done) Temporary NOPASSWD sudoers option for fully unattended installs.
+- (done) Unserstand pass debus issue
+- (done) Prevent double-start of mpd (user service vs `.xinitrc`) in all contexts.
 - (done) Fix keyring issue for Electron apps (PAM config + xinitrc bootstrap via secret-tool)
+- Add lf-git and get image previews to work.
+- Add aerc & mbsybc (maybe a secondary wizard for setup).
 - Add `.gtkrc-2.0` with a symlink to `.config/gtk-2.0/gtkrc-2.0`.
 - Consider moving `.xprofile` and `.xinitrc` into `.config/x11` (LARBS-style).
 - Add `.config/shell/aliasrc`.
 - Decide on `.xprofile` vs `.zprofile` for environment exports.
-- Prevent double-start of mpd (user service vs `.xinitrc`) in all contexts.
-- Unterstand why pass only works with dbus enabled

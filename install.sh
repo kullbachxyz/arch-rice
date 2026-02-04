@@ -244,8 +244,6 @@ setup_keyring_pam() {
     echo "password   optional     pam_gnome_keyring.so" | sudo tee -a "$pam_passwd" >/dev/null
   fi
 
-  # Mask the socket to prevent systemd from starting a second daemon that conflicts with PAM
-  systemctl --user mask gnome-keyring-daemon.socket 2>/dev/null || true
 }
 
 disable_mpd_user_service() {

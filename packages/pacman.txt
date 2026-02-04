@@ -29,6 +29,8 @@ zathura-pdf-mupdf
 htop
 bluetui
 calcurse
+gnome-keyring
+libsecret
 gnome-themes-extra
 adwaita-icon-theme
 qt6ct

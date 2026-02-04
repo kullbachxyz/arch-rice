@@ -226,14 +226,36 @@ setup_mpd_dirs() {
   touch "${HOME}/.config/mpd/database"
 }
 
+setup_keyring_pam() {
+  local pam_login="/etc/pam.d/login"
+  local pam_passwd="/etc/pam.d/passwd"
+
+  # Add PAM lines to /etc/pam.d/login for auto-unlock on console login
+  if ! grep -q "pam_gnome_keyring.so" "$pam_login" 2>/dev/null; then
+    log "Configuring PAM for gnome-keyring auto-unlock..."
+    # Add auth line at end of auth section
+    sudo sed -i '/^auth.*pam_unix\.so/a auth       optional     pam_gnome_keyring.so' "$pam_login"
+    # Add session line at end of file
+    echo "session    optional     pam_gnome_keyring.so auto_start" | sudo tee -a "$pam_login" >/dev/null
+  fi
+
+  # Add PAM line to /etc/pam.d/passwd so keyring password updates with user password
+  if ! grep -q "pam_gnome_keyring.so" "$pam_passwd" 2>/dev/null; then
+    echo "password   optional     pam_gnome_keyring.so" | sudo tee -a "$pam_passwd" >/dev/null
+  fi
+
+  # Mask the socket to prevent systemd from starting a second daemon that conflicts with PAM
+  systemctl --user mask gnome-keyring-daemon.socket 2>/dev/null || true
+}
+
 disable_mpd_user_service() {
   if ! command -v systemctl >/dev/null 2>&1; then
     return 0
   fi
 
   if systemctl --user list-unit-files >/dev/null 2>&1; then
-    systemctl --user disable --now mpd.service >/dev/null 2>&1 || true
-    log "mpd user service disabled (if it was enabled)."
+    systemctl --user mask mpd.service >/dev/null 2>&1 || true
+    log "mpd user service masked."
   else
     log "systemctl --user not available; skipping mpd disable."
   fi
@@ -381,6 +403,7 @@ main() {
   ensure_aur_packages
   setup_dotfiles
   setup_mpd_dirs
+  setup_keyring_pam
   disable_mpd_user_service
   setup_librewolf_hardening
   build_suckless

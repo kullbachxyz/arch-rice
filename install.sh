@@ -254,6 +254,18 @@ PAMEOF
 
 }
 
+bootstrap_keyring() {
+  # Create the "login" keyring collection if it doesn't exist.
+  # This is required for Electron apps (Element, VS Code, etc.) to store secrets.
+  # Without this, gnome-keyring may be running but have no default collection.
+  if ! secret-tool lookup bootstrap archrice >/dev/null 2>&1; then
+    log "Bootstrapping gnome-keyring login collection..."
+    log "You may be prompted to set a password for the new keyring."
+    log "Use your LOGIN PASSWORD so it auto-unlocks on TTY login."
+    secret-tool store --label='arch-rice bootstrap' bootstrap archrice <<< "bootstrap"
+  fi
+}
+
 disable_mpd_user_service() {
   if ! command -v systemctl >/dev/null 2>&1; then
     return 0

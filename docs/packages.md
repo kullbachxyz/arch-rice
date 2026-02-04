@@ -82,3 +82,4 @@ Short descriptions of what gets installed.
 | ttf-jetbrains-mono-nerd | JetBrains Mono Nerd Font |
 | librewolf-bin | LibreWolf browser |
 | abook | address book |
+| lf-git | tui file-manager |

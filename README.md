@@ -25,6 +25,7 @@ Check installed packages only:
 - (done) Prevent double-start of mpd (user service vs `.xinitrc`) in all contexts.
 - (done) Fix keyring issue for Electron apps (PAM config + xinitrc bootstrap via secret-tool)
 - (done) Add lf-git and get image previews to work.
+- fix smartborder issue after swallow
 - Add aerc & mbsybc (maybe a secondary wizard for setup).
 - automatic SSH key unlock with pam (maybe pgp aswell).
 - Add `.gtkrc-2.0` with a symlink to `.config/gtk-2.0/gtkrc-2.0`.

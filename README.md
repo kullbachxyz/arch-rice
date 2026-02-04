@@ -26,6 +26,7 @@ Check installed packages only:
 - (done) Fix keyring issue for Electron apps (PAM config + xinitrc bootstrap via secret-tool)
 - Add lf-git and get image previews to work.
 - Add aerc & mbsybc (maybe a secondary wizard for setup).
+- automatic SSH key unlock with pam (maybe pgp aswell).
 - Add `.gtkrc-2.0` with a symlink to `.config/gtk-2.0/gtkrc-2.0`.
 - Consider moving `.xprofile` and `.xinitrc` into `.config/x11` (LARBS-style).
 - Add `.config/shell/aliasrc`.

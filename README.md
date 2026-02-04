@@ -21,7 +21,7 @@ Check installed packages only:
 ## TODO
 - (done) Ensure dmenu fork includes `dmenu_path` and `dmenu_run` (commit scripts so `make install` works cleanly on fresh systems).
 - (done) Temporary NOPASSWD sudoers option for fully unattended installs.
-- !!! Fix keyring issue (important).
+- !!! Fix keyring issue (validated and fixed with chromium)
 - Add `.gtkrc-2.0` with a symlink to `.config/gtk-2.0/gtkrc-2.0`.
 - Consider moving `.xprofile` and `.xinitrc` into `.config/x11` (LARBS-style).
 - Add `.config/shell/aliasrc`.

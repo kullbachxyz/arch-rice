@@ -230,13 +230,21 @@ setup_keyring_pam() {
   local pam_login="/etc/pam.d/login"
   local pam_passwd="/etc/pam.d/passwd"
 
-  # Add PAM lines to /etc/pam.d/login for auto-unlock on console login
+  # Configure /etc/pam.d/login for gnome-keyring auto-unlock on console login
+  # Lines must be in correct position within each section (auth after auth, session after session)
   if ! grep -q "pam_gnome_keyring.so" "$pam_login" 2>/dev/null; then
     log "Configuring PAM for gnome-keyring auto-unlock..."
-    # Add auth line at end of auth section
-    sudo sed -i '/^auth.*pam_unix\.so/a auth       optional     pam_gnome_keyring.so' "$pam_login"
-    # Add session line at end of file
-    echo "session    optional     pam_gnome_keyring.so auto_start" | sudo tee -a "$pam_login" >/dev/null
+    sudo tee "$pam_login" >/dev/null << 'PAMEOF'
+#%PAM-1.0
+
+auth       requisite    pam_nologin.so
+auth       include      system-local-login
+auth       optional     pam_gnome_keyring.so
+account    include      system-local-login
+session    include      system-local-login
+session    optional     pam_gnome_keyring.so auto_start
+password   include      system-local-login
+PAMEOF
   fi
 
   # Add PAM line to /etc/pam.d/passwd so keyring password updates with user password

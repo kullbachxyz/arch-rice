@@ -78,6 +78,7 @@ Short descriptions of what gets installed.
 | isync | IMAP/Maildir sync (provides mbsync) |
 | pass | password manager |
 | pass-otp | OTP extension for pass |
+| yt-dlp | video/audio downloader |
 
 ## AUR
 

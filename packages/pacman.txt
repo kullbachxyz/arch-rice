@@ -74,3 +74,4 @@ aerc
 isync
 pass
 pass-otp
+yt-dlp

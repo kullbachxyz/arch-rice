@@ -30,5 +30,5 @@ Check installed packages only:
 - [x] Add `.config/shell/aliasrc`.
 - [x] Use `.zprofile` for environment exports (removed `.xprofile`).
 - [ ] Decide on keeping smartborder/vanitygaps patch.
-- [ ] Fix lf previews
+- [x] Fix lf previews
 - [ ] Fix smartborder issue after swallow.

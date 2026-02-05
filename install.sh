@@ -267,6 +267,21 @@ disable_mpd_user_service() {
   fi
 }
 
+setup_pipewire() {
+  if ! command -v systemctl >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if ! systemctl --user list-unit-files >/dev/null 2>&1; then
+    log "systemctl --user not available; skipping pipewire setup."
+    return 0
+  fi
+
+  log "Enabling pipewire user services..."
+  systemctl --user enable pipewire.socket pipewire-pulse.socket wireplumber.service >/dev/null 2>&1 || true
+  log "Pipewire services enabled (will start on next login)."
+}
+
 setup_pam_ssh() {
   local pam_system_login="/etc/pam.d/system-login"
 
@@ -439,6 +454,7 @@ main() {
   setup_keyring_pam
   setup_pam_ssh
   disable_mpd_user_service
+  setup_pipewire
   setup_librewolf_hardening
   build_suckless
   set_default_shell

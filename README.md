@@ -27,6 +27,8 @@ Check installed packages only:
 - [x] Add lf-git and get image previews to work.
 - [x] Add aerc & mbsync. See [docs/email-setup.md](docs/email-setup.md).
 - [x] SSH agent setup: Using `pam_ssh` (AUR) for automatic SSH key unlock at login. See [docs/ssh-key-setup.md](docs/ssh-key-setup.md).
-- [ ] Fix smartborder issue after swallow.
 - [x] Add `.config/shell/aliasrc`.
 - [x] Use `.zprofile` for environment exports (removed `.xprofile`).
+- [ ] Decide on keeping smartborder/vanitygaps patch.
+- [ ] Fix lf previews
+- [ ] Fix smartborder issue after swallow.

@@ -83,3 +83,4 @@ Short descriptions of what gets installed.
 | librewolf-bin | LibreWolf browser |
 | abook | address book |
 | lf-git | tui file-manager |
+| pam_ssh | automatic SSH key unlock at login |

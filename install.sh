@@ -267,6 +267,33 @@ disable_mpd_user_service() {
   fi
 }
 
+setup_pam_ssh() {
+  local pam_system_login="/etc/pam.d/system-login"
+
+  if ! pacman -Qi pam_ssh >/dev/null 2>&1; then
+    log "pam_ssh not installed; skipping PAM ssh setup."
+    return 0
+  fi
+
+  if grep -q "pam_ssh.so" "$pam_system_login" 2>/dev/null; then
+    log "pam_ssh already configured in system-login."
+    return 0
+  fi
+
+  log "Configuring PAM for automatic SSH key unlock..."
+
+  # Add auth line after "auth include system-auth"
+  sudo sed -i '/^auth.*include.*system-auth$/a auth       optional   pam_ssh.so       try_first_pass' "$pam_system_login"
+
+  # Add session line at the end
+  echo "session    optional   pam_ssh.so" | sudo tee -a "$pam_system_login" >/dev/null
+
+  # Create login-keys.d directory
+  mkdir -p "${HOME}/.ssh/login-keys.d"
+
+  log "pam_ssh configured. See docs/ssh-key-setup.md for adding SSH keys."
+}
+
 setup_librewolf_hardening() {
   if ! command -v librewolf >/dev/null 2>&1; then
     log "LibreWolf not found; skipping hardening."
@@ -410,6 +437,7 @@ main() {
   setup_dotfiles
   setup_mpd_dirs
   setup_keyring_pam
+  setup_pam_ssh
   disable_mpd_user_service
   setup_librewolf_hardening
   build_suckless

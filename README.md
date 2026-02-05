@@ -29,6 +29,8 @@ Check installed packages only:
 - [x] SSH agent setup: Using `pam_ssh` (AUR) for automatic SSH key unlock at login. See [docs/ssh-key-setup.md](docs/ssh-key-setup.md).
 - [x] Add `.config/shell/aliasrc`.
 - [x] Use `.zprofile` for environment exports (removed `.xprofile`).
-- [ ] Decide on keeping smartborder/vanitygaps patch.
 - [x] Fix lf previews
+- [ ] Decide on keeping smartborder/vanitygaps patch.
 - [ ] Fix smartborder issue after swallow.
+- [ ] Write minimal vim plugin manager.
+- [ ] Improve vim config.

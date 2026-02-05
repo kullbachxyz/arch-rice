@@ -27,6 +27,7 @@ Short descriptions of what gets installed.
 | fontconfig | font configuration |
 | dunst | notifications |
 | beets | music library manager |
+| python-pylast | Last.fm API for beets lastgenre plugin |
 | mpd | music daemon |
 | ncmpcpp | MPD client |
 | zathura | PDF viewer |
@@ -42,6 +43,7 @@ Short descriptions of what gets installed.
 | pipewire-audio | PipeWire audio |
 | pipewire-pulse | PulseAudio compatibility |
 | wireplumber | session manager |
+| pulsemixer | TUI audio mixer |
 | networkmanager | network management |
 | xclip | clipboard tool |
 | xwallpaper | wallpaper setter |
@@ -72,6 +74,7 @@ Short descriptions of what gets installed.
 | fzf | fuzzy finder |
 | bat | cat with syntax highlighting |
 | maim | screenshot tool |
+| ueberzugpp | image library for lf previews |
 | polkit | policy kit |
 | libnotify | notification library |
 | aerc | terminal email client |

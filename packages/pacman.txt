@@ -21,6 +21,7 @@ polkit
 libnotify
 dunst
 beets
+python-pylast
 mpd
 ncmpcpp
 ttf-dejavu
@@ -39,6 +40,7 @@ pipewire
 pipewire-audio
 pipewire-pulse
 wireplumber
+pulsemixer
 networkmanager
 xclip
 xwallpaper
@@ -69,6 +71,7 @@ mediainfo
 fzf
 bat
 maim
+ueberzugpp
 slock
 aerc
 isync

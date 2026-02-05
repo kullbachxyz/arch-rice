@@ -32,6 +32,7 @@ Short descriptions of what gets installed.
 | ncmpcpp | MPD client |
 | zathura | PDF viewer |
 | ttf-dejavu | proper emoji support |
+| ttf-libertinus | sans-serif fonts |
 | zathura-pdf-mupdf | PDF backend for zathura |
 | htop | process viewer |
 | bluetui | Bluetooth TUI |

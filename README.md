@@ -31,6 +31,7 @@ Check installed packages only:
 - [x] Use `.zprofile` for environment exports (removed `.xprofile`).
 - [x] Fix lf previews
 - [ ] Decide on keeping smartborder/vanitygaps patch.
+- [ ] Decide on default fonts (currently Libertinus Sans/Serif & JetBrains Mono Nerd)
 - [ ] Fix smartborder issue after swallow.
 - [ ] Write minimal vim plugin manager.
 - [ ] Improve vim config.

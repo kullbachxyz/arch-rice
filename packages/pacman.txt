@@ -25,6 +25,7 @@ python-pylast
 mpd
 ncmpcpp
 ttf-dejavu
+ttf-libertinus
 noto-fonts-emoji
 zathura
 zathura-pdf-mupdf

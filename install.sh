@@ -226,6 +226,11 @@ setup_mpd_dirs() {
   touch "${HOME}/.config/mpd/database"
 }
 
+setup_abook() {
+  mkdir -p "${HOME}/.config/abook"
+  touch "${HOME}/.config/abook/addressbook"
+}
+
 setup_keyring_pam() {
   local pam_login="/etc/pam.d/login"
   local pam_passwd="/etc/pam.d/passwd"
@@ -451,6 +456,7 @@ main() {
   ensure_aur_packages
   setup_dotfiles
   setup_mpd_dirs
+  setup_abook
   setup_keyring_pam
   setup_pam_ssh
   disable_mpd_user_service

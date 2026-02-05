@@ -28,7 +28,5 @@ Check installed packages only:
 - [x] Add aerc & mbsync. See [docs/email-setup.md](docs/email-setup.md).
 - [x] SSH agent setup: Using `pam_ssh` (AUR) for automatic SSH key unlock at login. See [docs/ssh-key-setup.md](docs/ssh-key-setup.md).
 - [ ] Fix smartborder issue after swallow.
-- [ ] Add `.gtkrc-2.0` with a symlink to `.config/gtk-2.0/gtkrc-2.0`.
-- [ ] Consider moving `.xprofile` and `.xinitrc` into `.config/x11` (LARBS-style).
-- [ ] Add `.config/shell/aliasrc`.
-- [ ] Decide on `.xprofile` vs `.zprofile` for environment exports.
+- [x] Add `.config/shell/aliasrc`.
+- [x] Use `.zprofile` for environment exports (removed `.xprofile`).

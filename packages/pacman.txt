@@ -72,3 +72,5 @@ maim
 slock
 aerc
 isync
+pass
+pass-otp

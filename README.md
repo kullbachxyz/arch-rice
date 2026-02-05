@@ -26,7 +26,7 @@ Check installed packages only:
 - (done) Fix keyring issue for Electron apps (PAM config + xinitrc bootstrap via secret-tool)
 - (done) Add lf-git and get image previews to work.
 - fix smartborder issue after swallow
-- Add aerc & mbsybc (maybe a secondary wizard for setup).
+- (done) Add aerc & mbsync. See [docs/email-setup.md](docs/email-setup.md).
 - (done) SSH agent setup: Using `pam_ssh` (AUR) for automatic SSH key unlock at login. See [docs/ssh-key-setup.md](docs/ssh-key-setup.md).
 - Add `.gtkrc-2.0` with a symlink to `.config/gtk-2.0/gtkrc-2.0`.
 - Consider moving `.xprofile` and `.xinitrc` into `.config/x11` (LARBS-style).

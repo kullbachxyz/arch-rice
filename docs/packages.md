@@ -74,6 +74,8 @@ Short descriptions of what gets installed.
 | maim | screenshot tool |
 | polkit | policy kit |
 | libnotify | notification library |
+| aerc | terminal email client |
+| isync | IMAP/Maildir sync (provides mbsync) |
 
 ## AUR
 

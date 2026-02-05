@@ -70,3 +70,5 @@ fzf
 bat
 maim
 slock
+aerc
+isync

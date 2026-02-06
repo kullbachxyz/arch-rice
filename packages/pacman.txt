@@ -20,6 +20,7 @@ fontconfig
 polkit
 libnotify
 dunst
+xcape
 beets
 python-pylast
 mpd

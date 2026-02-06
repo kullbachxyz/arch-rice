@@ -26,6 +26,7 @@ Short descriptions of what gets installed.
 | freetype2 | font rasterizer |
 | fontconfig | font configuration |
 | dunst | notifications |
+| xcape | modifier key remap |
 | beets | music library manager |
 | python-pylast | Last.fm API for beets lastgenre plugin |
 | mpd | music daemon |

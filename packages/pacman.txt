@@ -49,7 +49,7 @@ xwallpaper
 playerctl
 bluez
 bluez-utils
-xcompmgr
+picom
 dosfstools
 exfatprogs
 ntfs-3g

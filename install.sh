@@ -366,7 +366,6 @@ EOF
 
   if ! curl -fsSL "$arkenfox_url" -o "$profile_path/user.js"; then
     log "Failed to download arkenfox user.js; skipping hardening."
-    kill "$lw_pid" 2>/dev/null || true
     return 0
   fi
 
@@ -375,7 +374,6 @@ EOF
   if ! curl -fsSL "$larbs_url" -o "$tmp_larbs"; then
     log "Failed to download larbs.js; skipping hardening."
     rm -f "$tmp_larbs"
-    kill "$lw_pid" 2>/dev/null || true
     return 0
   fi
 

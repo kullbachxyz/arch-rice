@@ -52,7 +52,7 @@ Short descriptions of what gets installed.
 | playerctl | media control |
 | bluez | Bluetooth stack |
 | bluez-utils | Bluetooth tools |
-| xcompmgr | compositor |
+| picom | compositor |
 | dosfstools | FAT tools |
 | exfatprogs | exFAT tools |
 | ntfs-3g | NTFS support |

@@ -159,6 +159,7 @@ build_suckless() {
     "https://github.com/kullbachxyz/dwmblocks"
     "https://github.com/kullbachxyz/dmenu"
     "https://github.com/kullbachxyz/st"
+    "https://github.com/kullbachxyz/slock"
   )
 
   for repo in "${repos[@]}"; do

@@ -311,6 +311,37 @@ setup_pam_ssh() {
   log "pam_ssh configured. See docs/ssh-key-setup.md for adding SSH keys."
 }
 
+setup_pam_gnupg() {
+  local pam_system_login="/etc/pam.d/system-login"
+
+  if ! pacman -Qi pam-gnupg >/dev/null 2>&1; then
+    log "pam-gnupg not installed; skipping PAM gnupg setup."
+    return 0
+  fi
+
+  if grep -q "pam_gnupg.so" "$pam_system_login" 2>/dev/null; then
+    log "pam_gnupg already configured in system-login."
+    return 0
+  fi
+
+  log "Configuring PAM for automatic GPG key unlock..."
+
+  # Add auth line after "auth include system-auth"
+  sudo sed -i '/^auth.*include.*system-auth$/a auth       optional   pam_gnupg.so     store-only' "$pam_system_login"
+
+  # Add session line at the end
+  echo "session    optional   pam_gnupg.so" | sudo tee -a "$pam_system_login" >/dev/null
+
+  # Configure gpg-agent for preset passphrases
+  local gpg_agent_conf="${HOME}/.gnupg/gpg-agent.conf"
+  mkdir -p "${HOME}/.gnupg"
+  if ! grep -q "allow-preset-passphrase" "$gpg_agent_conf" 2>/dev/null; then
+    printf 'allow-preset-passphrase\nmax-cache-ttl 86400\n' >> "$gpg_agent_conf"
+  fi
+
+  log "pam_gnupg configured. See docs/gpg-key-setup.md for key setup."
+}
+
 setup_librewolf_hardening() {
   if ! command -v librewolf >/dev/null 2>&1; then
     log "LibreWolf not found; skipping hardening."
@@ -446,6 +477,7 @@ main() {
   setup_abook
   setup_keyring_pam
   setup_pam_ssh
+  setup_pam_gnupg
   mask_user_services
   setup_librewolf_hardening
   build_suckless

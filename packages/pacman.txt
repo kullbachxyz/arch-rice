@@ -29,6 +29,7 @@ ncmpcpp
 ttf-dejavu
 ttf-libertinus
 noto-fonts-emoji
+noto-fonts-cjk
 zathura
 zathura-pdf-mupdf
 htop

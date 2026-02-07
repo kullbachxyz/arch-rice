@@ -51,8 +51,6 @@ playerctl
 bluez
 bluez-utils
 picom
-xdg-desktop-portal
-xdg-desktop-portal-gtk
 dosfstools
 exfatprogs
 ntfs-3g

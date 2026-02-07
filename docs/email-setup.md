@@ -89,40 +89,29 @@ Key bindings:
 - `a` - archive
 - `q` - quit
 
-## Auto-Sync (Optional)
+## Auto-Sync with goimapnotify
 
-Create systemd user units for periodic sync:
+`goimapnotify` uses IMAP IDLE to maintain a persistent connection to the mail server. When new mail arrives, the server pushes a notification instantly and goimapnotify triggers `mbsync`. If the server doesn't support IDLE, it falls back to polling every 15 minutes.
+
+### Configure goimapnotify
 
 ```bash
-mkdir -p ~/.config/systemd/user
+cp ~/.config/imapnotify/account1.conf.yaml.example ~/.config/imapnotify/account1.conf.yaml
+nvim ~/.config/imapnotify/account1.conf.yaml
 ```
 
-`~/.config/systemd/user/mbsync.service`:
-```ini
-[Unit]
-Description=Mailbox sync
+Replace placeholders to match your mbsyncrc (host, username, passwordCMD, account name).
 
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/mbsync -a
-```
+### Run
 
-`~/.config/systemd/user/mbsync.timer`:
-```ini
-[Unit]
-Description=Mailbox sync timer
-
-[Timer]
-OnBootSec=1m
-OnUnitActiveSec=5m
-
-[Install]
-WantedBy=timers.target
-```
-
-Enable:
 ```bash
-systemctl --user enable --now mbsync.timer
+goimapnotify -conf ~/.config/imapnotify/account1.conf.yaml
+```
+
+For multiple accounts, create one config file per account and run one instance each. Add to `.xinitrc` for autostart:
+
+```bash
+goimapnotify -conf ~/.config/imapnotify/account1.conf.yaml &
 ```
 
 ## Multiple Accounts

@@ -78,6 +78,7 @@ maim
 ueberzugpp
 aerc
 isync
+goimapnotify
 pass
 pass-otp
 yt-dlp

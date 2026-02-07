@@ -86,6 +86,7 @@ Short descriptions of what gets installed.
 | libnotify | notification library |
 | aerc | terminal email client |
 | isync | IMAP/Maildir sync (provides mbsync) |
+| goimapnotify | IMAP IDLE notifications (triggers mbsync on new mail) |
 | pass | password manager |
 | pass-otp | OTP extension for pass |
 | yt-dlp | video/audio downloader |

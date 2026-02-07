@@ -260,17 +260,27 @@ PAMEOF
 
 }
 
-disable_mpd_user_service() {
+mask_user_services() {
   if ! command -v systemctl >/dev/null 2>&1; then
     return 0
   fi
 
-  if systemctl --user list-unit-files >/dev/null 2>&1; then
-    systemctl --user mask mpd.service >/dev/null 2>&1 || true
-    log "mpd user service masked."
-  else
-    log "systemctl --user not available; skipping mpd disable."
+  if ! systemctl --user list-unit-files >/dev/null 2>&1; then
+    log "systemctl --user not available; skipping service masking."
+    return 0
   fi
+
+  local units=(
+    mpd.service
+    pipewire.socket
+    pipewire.service
+    pipewire-pulse.socket
+    pipewire-pulse.service
+    wireplumber.service
+  )
+
+  systemctl --user mask "${units[@]}" >/dev/null 2>&1 || true
+  log "Masked user services: ${units[*]}"
 }
 
 
@@ -422,7 +432,7 @@ main() {
   setup_abook
   setup_keyring_pam
   setup_pam_ssh
-  disable_mpd_user_service
+  mask_user_services
   setup_librewolf_hardening
   build_suckless
   set_default_shell

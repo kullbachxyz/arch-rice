@@ -30,9 +30,9 @@ Check installed packages only:
 - [x] Add `.config/shell/aliasrc`.
 - [x] Use `.zprofile` for environment exports (removed `.xprofile`).
 - [x] Fix lf previews
+- [x] Pipewire startup issue (fixed now with .xinitrc call)
 - [ ] Decide on keeping smartborder/vanitygaps/xrdb patch.
 - [ ] Decide on default fonts (currently DejaVu Sans & JetBrains Mono Nerd) - remove ttf-libertinus? 
 - [ ] Fix smartborder issue after swallow.
 - [ ] Write minimal vim plugin manager.
 - [ ] Improve vim config.
-- [x] Pipewire startup issue (fixed now with systemctl start in .xinitrc, but feels janky)

@@ -34,11 +34,15 @@ Short descriptions of what gets installed.
 | ncmpcpp | MPD client |
 | zathura | PDF viewer |
 | ttf-dejavu | proper emoji support |
-| ttf-libertinus | sans-serif fonts |
+| ttf-libertinus | serif fonts |
+| noto-fonts-emoji | emoji support |
+| noto-fonts-cjk | CJK font support |
 | zathura-pdf-mupdf | PDF backend for zathura |
 | htop | process viewer |
 | bluetui | Bluetooth TUI |
 | calcurse | calendar/organizer |
+| gnome-keyring | secrets/password storage |
+| libsecret | secret storage library |
 | gnome-themes-extra | includes Adwaita-dark |
 | adwaita-icon-theme | Adwaita icons |
 | qt6ct | Qt6 theme control |
@@ -85,6 +89,7 @@ Short descriptions of what gets installed.
 | pass | password manager |
 | pass-otp | OTP extension for pass |
 | yt-dlp | video/audio downloader |
+| libreoffice-fresh | office suite (latest branch) |
 
 ## AUR
 

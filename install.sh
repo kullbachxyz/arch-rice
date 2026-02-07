@@ -403,11 +403,18 @@ EOF
     log "policies.json not found or jq missing; skipping extension policies."
   fi
 
-  # Force resistFingerprinting off in librewolf.cfg (runs after user.js, always wins)
+  # Force resistFingerprinting off in librewolf.cfg via lockPref (cannot be overridden)
   local lw_cfg="/usr/lib/librewolf/librewolf.cfg"
-  if [[ -f "$lw_cfg" ]] && ! grep -q 'privacy.resistFingerprinting.*false' "$lw_cfg" 2>/dev/null; then
-    log "Setting resistFingerprinting=false in librewolf.cfg for dark mode support."
-    printf '\n// Allow dark mode detection\ndefaultPref("privacy.resistFingerprinting", false);\n' | sudo tee -a "$lw_cfg" >/dev/null
+  if [[ -f "$lw_cfg" ]]; then
+    if ! grep -q 'lockPref("privacy.resistFingerprinting"' "$lw_cfg" 2>/dev/null; then
+      log "Locking resistFingerprinting=false in librewolf.cfg for dark mode support."
+      # Replace existing defaultPref with lockPref, or append if not present
+      if grep -q 'defaultPref("privacy.resistFingerprinting"' "$lw_cfg" 2>/dev/null; then
+        sudo sed -i 's/defaultPref("privacy.resistFingerprinting".*/lockPref("privacy.resistFingerprinting", false);/' "$lw_cfg"
+      else
+        printf '\n// Allow dark mode detection\nlockPref("privacy.resistFingerprinting", false);\n' | sudo tee -a "$lw_cfg" >/dev/null
+      fi
+    fi
   fi
 
   pkill -u "$USER" librewolf >/dev/null 2>&1 || true

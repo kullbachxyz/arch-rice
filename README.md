@@ -35,3 +35,4 @@ Check installed packages only:
 - [ ] Fix smartborder issue after swallow.
 - [ ] Write minimal vim plugin manager.
 - [ ] Improve vim config.
+- [ ] Piprewire startup issue

@@ -35,5 +35,3 @@ Check installed packages only:
 - [ ] Decide on keeping smartborder/vanitygaps/xrdb patch.
 - [ ] Decide on default fonts (currently DejaVu Sans & JetBrains Mono Nerd) - remove ttf-libertinus? 
 - [ ] Fix smartborder issue after swallow.
-- [ ] Write minimal vim plugin manager.
-- [ ] Improve vim config.

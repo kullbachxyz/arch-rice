@@ -54,6 +54,9 @@ Short descriptions of what gets installed.
 | bluez | Bluetooth stack |
 | bluez-utils | Bluetooth tools |
 | picom | compositor |
+| xdg-desktop-portal | D-Bus interface for desktop services |
+| xdg-desktop-portal-gtk | GTK portal backend (dark mode detection for LibreWolf) |
+| dialog | TUI dialogs for the installer |
 | dosfstools | FAT tools |
 | exfatprogs | exFAT tools |
 | ntfs-3g | NTFS support |

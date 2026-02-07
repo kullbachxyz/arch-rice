@@ -46,8 +46,8 @@ user_pref("identity.fxaccounts.enabled", false);
 // Fix the issue where right mouse button instantly clicks
 user_pref("ui.context_menus.after_mouseup", true);
 
-// ===== DARK MODE FINGERPRINTING TWEAKS =====
-// Allow sites to see prefers-color-scheme while keeping FPP
+// ===== DARK MODE =====
+// Disable RFP so sites can detect prefers-color-scheme (dark mode via xdg-desktop-portal-gtk)
 user_pref("privacy.resistFingerprinting", false);
 user_pref("privacy.fingerprintingProtection", true);
 user_pref("privacy.fingerprintingProtection.overrides", "+AllTargets,-CSSPrefersColorScheme");

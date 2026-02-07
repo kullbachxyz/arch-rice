@@ -322,7 +322,7 @@ setup_librewolf_hardening() {
   fi
 
   local arkenfox_url="https://raw.githubusercontent.com/arkenfox/user.js/master/user.js"
-  local larbs_url="https://raw.githubusercontent.com/LukeSmithxyz/voidrice/refs/heads/master/.config/firefox/larbs.js"
+  local overrides_file="$ROOT_DIR/config/librewolf-overrides.js"
   local profiles_dir="${HOME}/.librewolf"
   local profiles_ini="${profiles_dir}/profiles.ini"
   local policy_file="/usr/lib/librewolf/distribution/policies.json"
@@ -365,40 +365,18 @@ EOF
     mv "$profile_path/user.js" "$profile_path/user.js.bak_$(date +%F_%T)"
   fi
 
+  if [[ ! -f "$overrides_file" ]]; then
+    log "Overrides file not found at $overrides_file; skipping hardening."
+    return 0
+  fi
+
   if ! curl -fsSL "$arkenfox_url" -o "$profile_path/user.js"; then
     log "Failed to download arkenfox user.js; skipping hardening."
     return 0
   fi
 
-  local tmp_larbs
-  tmp_larbs="$(mktemp)"
-  if ! curl -fsSL "$larbs_url" -o "$tmp_larbs"; then
-    log "Failed to download larbs.js; skipping hardening."
-    rm -f "$tmp_larbs"
-    return 0
-  fi
-
-  cp "$tmp_larbs" "$profile_path/larbs.js"
-  printf '\n\n// ===== LARBS OVERRIDES (appended after arkenfox) =====\n\n' >> "$profile_path/user.js"
-  cat "$tmp_larbs" >> "$profile_path/user.js"
-  rm -f "$tmp_larbs"
-
-  cat >> "$profile_path/user.js" << 'EOF'
-
-// ===== DARK MODE FINGERPRINTING TWEAKS =====
-// Allow sites to see prefers-color-scheme while keeping FPP
-user_pref("privacy.resistFingerprinting", false);
-user_pref("privacy.fingerprintingProtection", true);
-user_pref("privacy.fingerprintingProtection.overrides", "+AllTargets,-CSSPrefersColorScheme");
-
-// ===== UI TWEAKS =====
-
-// Disable the previous session restore prompt
-user_pref("browser.sessionstore.resume_from_crash", true);
-user_pref("browser.sessionstore.restore_on_demand", false);
-user_pref("browser.sessionstore.restore_tabs_lazily", false);
-
-EOF
+  printf '\n\n' >> "$profile_path/user.js"
+  cat "$overrides_file" >> "$profile_path/user.js"
 
   if command -v jq >/dev/null 2>&1 && [[ -f "$policy_file" ]]; then
     local backup="${policy_file}.bak_$(date +%F_%T)"

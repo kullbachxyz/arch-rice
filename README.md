@@ -3,7 +3,7 @@
 Post-install setup for Arch Linux with X + dwm.
 
 ## Structure
-- `install.sh` — installs packages, sets up yay, builds dwm/dwmblocks/dmenu/st from source. Includes a TUI progress display (falls back to plain log output if unavailable).
+- `install.sh` — installs packages, sets up yay, builds dwm/dwmblocks/dmenu/st from source.
 - `packages/pacman.txt` — repo packages.
 - `packages/aur.txt` — AUR packages.
 - `config/librewolf-overrides.js` — LibreWolf hardening overrides (appended to arkenfox user.js).

@@ -15,6 +15,7 @@ xorg-xwininfo
 libx11
 libxinerama
 libxft
+imlib2
 freetype2
 fontconfig
 polkit

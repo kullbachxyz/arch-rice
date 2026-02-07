@@ -23,6 +23,7 @@ Short descriptions of what gets installed.
 | libx11 | X11 client library |
 | libxinerama | Xinerama support for dwm |
 | libxft | Xft font rendering |
+| imlib2 | image loading library (slock background) |
 | freetype2 | font rasterizer |
 | fontconfig | font configuration |
 | dunst | notifications |

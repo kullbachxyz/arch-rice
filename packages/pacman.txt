@@ -45,6 +45,8 @@ pipewire-audio
 pipewire-pulse
 wireplumber
 pulsemixer
+sof-firmware
+alsa-firmware
 networkmanager
 xclip
 xwallpaper

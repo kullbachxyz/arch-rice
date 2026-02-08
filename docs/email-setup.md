@@ -108,11 +108,30 @@ Replace placeholders to match your mbsyncrc (host, username, passwordCMD, accoun
 goimapnotify -conf ~/.config/imapnotify/account1.conf.yaml
 ```
 
-For multiple accounts, create one config file per account and run one instance each. Add to `.xinitrc` for autostart:
+For multiple accounts, create one config file per account and run one instance each.
+
+### Autostart
+
+The `mailnotify` script in `~/.local/bin/` validates and launches `goimapnotify` for all config files in `~/.config/imapnotify/` (excluding `.example` files). It is started in `.xinitrc`:
 
 ```bash
-goimapnotify -conf ~/.config/imapnotify/account1.conf.yaml &
+mailnotify &
 ```
+
+### Desktop Notifications
+
+`mailnotify-newmail` in `~/.local/bin/` is called by `onNewMailPost` in each imapnotify config. It parses new mail in `INBOX/new/` across all accounts, decodes MIME headers (From/Subject), and sends `notify-send` notifications. For >5 new mails it sends a single summary instead.
+
+Set it in your imapnotify config:
+
+```yaml
+onNewMail: "mbsync your@email.com"
+onNewMailPost: "mailnotify-newmail"
+```
+
+### dwmblocks Module
+
+`~/.local/src/dwmblocks/scripts/mail.sh` shows an envelope icon with the count of unread mail across all accounts (signal 6, updates every 60s). It counts mail in both `INBOX/new/` and unseen mail in `INBOX/cur/` (no `S` flag). Hidden when count is 0.
 
 ## Multiple Accounts
 

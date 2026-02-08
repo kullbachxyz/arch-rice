@@ -1,6 +1,6 @@
 # Email Setup
 
-Terminal email using `aerc` (client) and `mbsync` (IMAP sync).
+Terminal email using `aerc` (client), `mbsync` (IMAP sync), and `msmtp` (SMTP with offline queue).
 
 ## Prerequisites
 
@@ -28,13 +28,44 @@ Replace placeholders:
 - `imap.example.com` - your provider's IMAP server
 - `account1` - short account name (e.g., `personal`, `work`)
 
-## 3. Create Mail Directory
+## 3. Configure msmtp
+
+Copy and edit the example:
+
+```bash
+cp ~/.config/msmtp/config.example ~/.config/msmtp/config
+chmod 600 ~/.config/msmtp/config
+nvim ~/.config/msmtp/config
+```
+
+Replace placeholders:
+- `your@email.com` - your email address
+- `smtp.example.com` - your provider's SMTP server
+- `account1` - short account name
+
+Create required directories and symlink `msmtpq` (offline queue wrapper):
+
+```bash
+mkdir -p ~/.local/share/msmtp/queue
+ln -sf /usr/share/doc/msmtp/msmtpq/msmtpq ~/.local/bin/msmtpq
+```
+
+Add to `~/.zprofile`:
+
+```bash
+export MSMTPQ_Q="$HOME/.local/share/msmtp/queue"
+export MSMTPQ_LOG="$HOME/.local/share/msmtp/queue.log"
+```
+
+Mail sent offline is queued in `~/.local/share/msmtp/queue/` and flushed automatically when goimapnotify syncs (via `msmtpq -r` in `onNewMail`). To flush manually: `msmtpq -r`.
+
+## 4. Create Mail Directory
 
 ```bash
 mkdir -p ~/.local/share/mail/your@email.com
 ```
 
-## 4. Initial Sync
+## 5. Initial Sync
 
 ```bash
 mbsync -aV
@@ -42,7 +73,7 @@ mbsync -aV
 
 This downloads all mail. First sync may take a while.
 
-## 5. Configure aerc
+## 6. Configure aerc
 
 Copy and edit the template:
 
@@ -55,10 +86,9 @@ nvim ~/.config/aerc/accounts.conf
 Replace placeholders:
 - `your@email.com` - your email address
 - `Your Name` - display name for outgoing mail
-- `smtp.example.com` - your provider's SMTP server
-- `account1` - must match the name used in mbsyncrc
+- `account1` - must match the name used in mbsyncrc and msmtp config
 
-## 6. Folder Remapping (Optional)
+## 7. Folder Remapping (Optional)
 
 If your provider uses non-standard folder names, create a remap file:
 
@@ -73,7 +103,7 @@ Then reference it in `accounts.conf`:
 folder-map = ~/.config/aerc/remap/provider.conf
 ```
 
-## 7. Launch aerc
+## 8. Launch aerc
 
 ```bash
 aerc
@@ -120,18 +150,20 @@ mailnotify &
 
 ### Desktop Notifications
 
-`mailnotify-newmail` in `~/.local/bin/` is called by `onNewMailPost` in each imapnotify config. It parses new mail in `INBOX/new/` across all accounts, decodes MIME headers (From/Subject), and sends `notify-send` notifications. For >5 new mails it sends a single summary instead.
+`mailnotify-newmail` in `~/.local/bin/` is called by `onNewMailPost` in each imapnotify config. It parses new mail in `INBOX/new/` across all accounts, decodes MIME headers (From/Subject) via perl, and sends `notify-send` notifications with bold sender and subject. For >5 new mails it sends a single summary instead. It also signals dwmblocks (RTMIN+6) to refresh the mail count immediately.
+
+The full flow: IMAP IDLE event → `mbsync` syncs mail + `msmtpq -r` flushes outgoing queue → `mailnotify-newmail` sends notifications + refreshes dwmblocks.
 
 Set it in your imapnotify config:
 
 ```yaml
-onNewMail: "mbsync your@email.com"
+onNewMail: "mbsync your@email.com; msmtpq -r"
 onNewMailPost: "mailnotify-newmail"
 ```
 
 ### dwmblocks Module
 
-`~/.local/src/dwmblocks/scripts/mail.sh` shows an envelope icon with the count of unread mail across all accounts (signal 6, updates every 60s). It counts mail in both `INBOX/new/` and unseen mail in `INBOX/cur/` (no `S` flag). Hidden when count is 0.
+`~/.local/src/dwmblocks/scripts/mail.sh` shows an envelope icon with the count of unread mail across all accounts (signal 6, updates every 60s). It counts mail in both `INBOX/new/` and unseen mail in `INBOX/cur/` (no `S` flag). Hidden when count is 0. Left click opens aerc in `$TERMINAL`.
 
 ## Multiple Accounts
 

@@ -232,11 +232,6 @@ setup_abook() {
   touch "${HOME}/.config/abook/addressbook"
 }
 
-setup_mail() {
-  mkdir -p "${HOME}/.local/share/msmtp/queue"
-  ln -sf /usr/share/doc/msmtp/msmtpq/msmtpq "${HOME}/.local/bin/msmtpq"
-}
-
 setup_keyring_pam() {
   local pam_login="/etc/pam.d/login"
   local pam_passwd="/etc/pam.d/passwd"
@@ -480,7 +475,6 @@ main() {
   setup_dotfiles
   setup_mpd_dirs
   setup_abook
-  setup_mail
   setup_keyring_pam
   setup_pam_ssh
   setup_pam_gnupg

@@ -80,7 +80,6 @@ aerc
 isync
 goimapnotify
 msmtp
-msmtp-mta
 pass
 pass-otp
 yt-dlp

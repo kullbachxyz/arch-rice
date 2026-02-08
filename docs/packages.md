@@ -88,7 +88,6 @@ Short descriptions of what gets installed.
 | isync | IMAP/Maildir sync (provides mbsync) |
 | goimapnotify | IMAP IDLE notifications (triggers mbsync on new mail) |
 | msmtp | SMTP client for sending mail |
-| msmtp-mta | sendmail compatibility + msmtpq offline queue |
 | pass | password manager |
 | pass-otp | OTP extension for pass |
 | yt-dlp | video/audio downloader |

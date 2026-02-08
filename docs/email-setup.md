@@ -43,22 +43,6 @@ Replace placeholders:
 - `smtp.example.com` - your provider's SMTP server
 - `account1` - short account name
 
-Create required directories and symlink `msmtpq` (offline queue wrapper):
-
-```bash
-mkdir -p ~/.local/share/msmtp/queue
-ln -sf /usr/share/doc/msmtp/msmtpq/msmtpq ~/.local/bin/msmtpq
-```
-
-Add to `~/.zprofile`:
-
-```bash
-export MSMTPQ_Q="$HOME/.local/share/msmtp/queue"
-export MSMTPQ_LOG="$HOME/.local/share/msmtp/queue.log"
-```
-
-Mail sent offline is queued in `~/.local/share/msmtp/queue/` and flushed automatically when goimapnotify syncs (via `msmtpq -r` in `onNewMail`). To flush manually: `msmtpq -r`.
-
 ## 4. Create Mail Directory
 
 ```bash
@@ -152,12 +136,12 @@ mailnotify &
 
 `mailnotify-newmail` in `~/.local/bin/` is called by `onNewMailPost` in each imapnotify config. It parses new mail in `INBOX/new/` across all accounts, decodes MIME headers (From/Subject) via perl, and sends `notify-send` notifications with bold sender and subject. For >5 new mails it sends a single summary instead. It also signals dwmblocks (RTMIN+6) to refresh the mail count immediately.
 
-The full flow: IMAP IDLE event → `mbsync` syncs mail + `msmtpq -r` flushes outgoing queue → `mailnotify-newmail` sends notifications + refreshes dwmblocks.
+The full flow: IMAP IDLE event → `mbsync` syncs mail → `mailnotify-newmail` sends notifications + refreshes dwmblocks.
 
 Set it in your imapnotify config:
 
 ```yaml
-onNewMail: "mbsync your@email.com; msmtpq -r"
+onNewMail: "mbsync your@email.com"
 onNewMailPost: "mailnotify-newmail"
 ```
 

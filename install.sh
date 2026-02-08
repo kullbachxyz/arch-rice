@@ -110,7 +110,7 @@ disable_temp_nopasswd() {
     return 0
   fi
 
-  if [[ -f "$SUDOERS_TEMP_FILE" ]]; then
+  if sudo test -f "$SUDOERS_TEMP_FILE"; then
     log "Removing temporary NOPASSWD sudoers file."
     sudo rm -f "$SUDOERS_TEMP_FILE"
   fi

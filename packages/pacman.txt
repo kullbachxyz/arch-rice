@@ -86,3 +86,5 @@ pass
 pass-otp
 yt-dlp
 libreoffice-fresh
+calibre
+syncthing

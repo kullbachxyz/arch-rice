@@ -4,3 +4,4 @@ abook
 lf-git
 pam_ssh
 pam-gnupg
+fluffychat-bin

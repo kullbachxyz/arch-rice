@@ -60,6 +60,7 @@ ntfs-3g
 openssh
 rsync
 neovim
+vim-spell-de
 zsh
 zsh-autosuggestions
 zsh-completions

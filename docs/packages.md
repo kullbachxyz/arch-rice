@@ -107,4 +107,4 @@ Short descriptions of what gets installed.
 | lf-git | tui file-manager |
 | pam_ssh | automatic SSH key unlock at login |
 | pam-gnupg | automatic GPG key unlock at login |
-| fluffychat-bin | Matrix chat client |
+| newsraft | TUI feed reader |

@@ -2,6 +2,8 @@
 
 Post-install setup for Arch Linux with X + dwm.
 
+![Screenshot](screenshot.png)
+
 ## Structure
 - `install.sh` — installs packages, sets up yay, builds dwm/dwmblocks/dmenu/st from source.
 - `packages/pacman.txt` — repo packages.

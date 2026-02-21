@@ -53,6 +53,7 @@ Short descriptions of what gets installed.
 | pipewire-pulse | PulseAudio compatibility |
 | wireplumber | session manager |
 | pulsemixer | TUI audio mixer |
+| w3m | text-based browser |
 | sof-firmware | Sound Open Firmware (Intel audio) |
 | alsa-firmware | ALSA firmware for various sound cards |
 | networkmanager | network management |

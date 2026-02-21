@@ -47,6 +47,7 @@ pipewire-audio
 pipewire-pulse
 wireplumber
 pulsemixer
+w3m
 sof-firmware
 alsa-firmware
 networkmanager

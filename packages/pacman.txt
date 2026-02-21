@@ -30,6 +30,8 @@ ttf-dejavu
 ttf-libertinus
 noto-fonts-emoji
 noto-fonts-cjk
+nsxiv
+hugo
 zathura
 zathura-pdf-mupdf
 htop

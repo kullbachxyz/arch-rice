@@ -33,6 +33,8 @@ Short descriptions of what gets installed.
 | mpd | music daemon |
 | ncmpcpp | MPD client |
 | zathura | PDF viewer |
+| nsxiv | image viewer |
+| hugo | website building framework |
 | ttf-dejavu | proper emoji support |
 | ttf-libertinus | serif fonts |
 | noto-fonts-emoji | emoji support |

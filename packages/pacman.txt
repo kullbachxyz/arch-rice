@@ -93,3 +93,4 @@ yt-dlp
 libreoffice-fresh
 calibre
 syncthing
+xdotool

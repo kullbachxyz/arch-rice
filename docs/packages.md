@@ -99,6 +99,7 @@ Short descriptions of what gets installed.
 | libreoffice-fresh | office suite (latest branch) |
 | calibre | ebook manager |
 | syncthing | file synchronization |
+| xdotool | X11 automation tool (used by remaps and maimpick) |
 | lf | tui file-manager |
 
 ## AUR

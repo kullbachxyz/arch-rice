@@ -1,7 +1,6 @@
 ttf-jetbrains-mono-nerd
 librewolf-bin
 abook
-lf-git
 pam_ssh
 pam-gnupg
 newsraft

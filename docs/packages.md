@@ -99,6 +99,7 @@ Short descriptions of what gets installed.
 | libreoffice-fresh | office suite (latest branch) |
 | calibre | ebook manager |
 | syncthing | file synchronization |
+| lf | tui file-manager |
 
 ## AUR
 
@@ -107,7 +108,6 @@ Short descriptions of what gets installed.
 | ttf-jetbrains-mono-nerd | JetBrains Mono Nerd Font |
 | librewolf-bin | LibreWolf browser |
 | abook | address book |
-| lf-git | tui file-manager |
 | pam_ssh | automatic SSH key unlock at login |
 | pam-gnupg | automatic GPG key unlock at login |
 | newsraft | TUI feed reader |

@@ -4,6 +4,7 @@ git
 go
 acpi
 jq
+lf
 xorg-server
 xorg-xinit
 xorg-xrandr

@@ -22,14 +22,14 @@ bootstrap_repo() {
   local tmpdir
   tmpdir="$(mktemp -d)"
   if command -v git >/dev/null 2>&1; then
-    git clone https://codeberg.org/kullbachxyz/arch-rice.git "$tmpdir/arch-rice"
+    git clone https://github.com/kullbachxyz/arch-rice.git "$tmpdir/arch-rice"
   else
     if command -v pacman >/dev/null 2>&1; then
       sudo pacman -Sy --noconfirm git
-      git clone https://codeberg.org/kullbachxyz/arch-rice.git "$tmpdir/arch-rice"
+      git clone https://github.com/kullbachxyz/arch-rice.git "$tmpdir/arch-rice"
     else
     curl -L -o "$tmpdir/arch-rice.tar.gz" \
-      https://codeberg.org/kullbachxyz/arch-rice/archive/refs/heads/main.tar.gz
+      https://github.com/kullbachxyz/arch-rice/archive/refs/heads/main.tar.gz
     tar -xzf "$tmpdir/arch-rice.tar.gz" -C "$tmpdir"
     mv "$tmpdir/arch-rice-main" "$tmpdir/arch-rice"
     fi
@@ -155,11 +155,11 @@ build_suckless() {
   mkdir -p "$SRC_DIR"
 
   local repos=(
-    "https://codeberg.org/kullbachxyz/dwm"
-    "https://codeberg.org/kullbachxyz/dwmblocks"
-    "https://codeberg.org/kullbachxyz/dmenu"
-    "https://codeberg.org/kullbachxyz/st"
-    "https://codeberg.org/kullbachxyz/slock"
+    "https://github.com/kullbachxyz/dwm"
+    "https://github.com/kullbachxyz/dwmblocks"
+    "https://github.com/kullbachxyz/dmenu"
+    "https://github.com/kullbachxyz/st"
+    "https://github.com/kullbachxyz/slock"
   )
 
   for repo in "${repos[@]}"; do
@@ -194,7 +194,7 @@ build_suckless() {
 }
 
 setup_dotfiles() {
-  local repo_url="https://codeberg.org/kullbachxyz/dotfiles"
+  local repo_url="https://github.com/kullbachxyz/dotfiles"
   local git_dir="${HOME}/.conf"
   local work_tree="${HOME}"
   local backup_dir="${HOME}/.conf-backup-$(date +%Y%m%d%H%M%S)"

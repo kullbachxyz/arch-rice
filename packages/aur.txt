@@ -1,4 +1,5 @@
-ttf-jetbrains-mono-nerd
+ttf-joypixels
+naps2-bin
 librewolf-bin
 abook
 pam_ssh

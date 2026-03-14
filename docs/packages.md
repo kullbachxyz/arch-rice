@@ -39,6 +39,7 @@ Short descriptions of what gets installed.
 | ttf-libertinus | serif fonts |
 | noto-fonts-emoji | emoji support |
 | noto-fonts-cjk | CJK font support |
+| ttf-font-awesome | icon font |
 | zathura-pdf-mupdf | PDF backend for zathura |
 | htop | process viewer |
 | bluetui | Bluetooth TUI |
@@ -106,7 +107,8 @@ Short descriptions of what gets installed.
 
 | Package | Description |
 | --- | --- |
-| ttf-jetbrains-mono-nerd | JetBrains Mono Nerd Font |
+| ttf-joypixels | JoyPixels Emoji Font |
+| naps2-bin | PDF Scanner application |
 | librewolf-bin | LibreWolf browser |
 | abook | address book |
 | pam_ssh | automatic SSH key unlock at login |

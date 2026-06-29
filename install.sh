@@ -195,7 +195,7 @@ build_suckless() {
 
 setup_dotfiles() {
   local repo_url="git@git.lokal.kullbach.net:kullbachxyz/dotfiles.git"
-  local git_dir="${HOME}/.conf"
+  local git_dir="${HOME}/.dotfiles"
   local work_tree="${HOME}"
   local backup_dir="${HOME}/.conf-backup-$(date +%Y%m%d%H%M%S)"
 

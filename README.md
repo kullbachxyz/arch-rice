@@ -14,7 +14,7 @@ Post-install setup for Arch Linux with X + dwm. Repos hosted on `git.lokal.kullb
 
 1. Installs pacman and AUR packages
 2. Builds dwm, dwmblocks, dmenu, st, abook from source (`~/.local/src/`)
-3. Clones dotfiles bare repo to `~/.conf`
+3. Clones dotfiles bare repo to `~/.dotfiles`
 4. Configures PAM for automatic SSH and GPG key unlock at TTY login
 5. Configures PAM for gnome-keyring auto-unlock
 6. Masks user services that are started manually via `.xinitrc`

@@ -1,11 +1,11 @@
 # Email Setup
 
-Terminal email using `aerc` (client), `mbsync` (IMAP sync), and `msmtp` (SMTP with offline queue).
+Terminal email using `neomutt` (client), `mbsync` (IMAP sync), `notmuch` (indexing), and `msmtp` (SMTP). Passwords from `pass`. Automatic sync every 15 minutes via cron.
 
 ## Prerequisites
 
 - `pass` configured with GPG key for password storage
-- IMAP/SMTP credentials from your email provider
+- IMAP/SMTP credentials from your email provider(s)
 
 ## 1. Store Passwords
 
@@ -13,148 +13,154 @@ Terminal email using `aerc` (client), `mbsync` (IMAP sync), and `msmtp` (SMTP wi
 pass insert mail/your@email.com
 ```
 
+One entry per account.
+
 ## 2. Configure mbsync
 
-Copy and edit the template:
+`~/.mbsyncrc` — one block per account:
 
-```bash
-cp ~/.mbsyncrc.template ~/.mbsyncrc
-chmod 600 ~/.mbsyncrc
-nvim ~/.mbsyncrc
+```
+IMAPAccount your@email.com
+Host imap.example.com
+Port 993
+User your@email.com
+PassCmd "pass mail/your@email.com"
+AuthMechs LOGIN
+TLSType IMAPS
+TLSVersions +1.3
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore your@email.com-remote
+Account your@email.com
+
+MaildirStore your@email.com-local
+Subfolders Verbatim
+Path ~/.local/share/mail/your@email.com/
+Inbox ~/.local/share/mail/your@email.com/INBOX
+
+Channel your@email.com
+Far :your@email.com-remote:
+Near :your@email.com-local:
+Patterns INBOX Drafts Sent Trash Archive
+Sync All
+Create Both
+Expunge Both
+Remove Near
+SyncState ~/.local/share/mail/your@email.com/.mbsyncstate
+MaxMessages 0
+ExpireUnread no
 ```
 
-Replace placeholders:
-- `your@email.com` - your email address
-- `imap.example.com` - your provider's IMAP server
-- `account1` - short account name (e.g., `personal`, `work`)
+Repeat for each additional account. Adjust `Patterns` to match your provider's folder names (`mbsync -l your@email.com` lists remote folders).
 
-## 3. Configure msmtp
-
-Copy and edit the example:
+Initial sync (downloads all mail, may take a while):
 
 ```bash
-cp ~/.config/msmtp/config.example ~/.config/msmtp/config
-chmod 600 ~/.config/msmtp/config
-nvim ~/.config/msmtp/config
+mbsync -a
 ```
 
-Replace placeholders:
-- `your@email.com` - your email address
-- `smtp.example.com` - your provider's SMTP server
-- `account1` - short account name
-
-## 4. Create Mail Directory
+## 3. Configure notmuch
 
 ```bash
-mkdir -p ~/.local/share/mail/your@email.com
+notmuch setup
 ```
 
-## 5. Initial Sync
-
-```bash
-mbsync -aV
-```
-
-This downloads all mail. First sync may take a while.
-
-## 6. Configure aerc
-
-Copy and edit the template:
-
-```bash
-cp ~/.config/aerc/accounts.conf.template ~/.config/aerc/accounts.conf
-chmod 600 ~/.config/aerc/accounts.conf
-nvim ~/.config/aerc/accounts.conf
-```
-
-Replace placeholders:
-- `your@email.com` - your email address
-- `Your Name` - display name for outgoing mail
-- `account1` - must match the name used in mbsyncrc and msmtp config
-
-## 7. Folder Remapping (Optional)
-
-If your provider uses non-standard folder names, create a remap file:
-
-```bash
-cp ~/.config/aerc/remap/example.conf.template ~/.config/aerc/remap/provider.conf
-nvim ~/.config/aerc/remap/provider.conf
-```
-
-Then reference it in `accounts.conf`:
+`~/.notmuch-config`:
 
 ```ini
-folder-map = ~/.config/aerc/remap/provider.conf
+[database]
+path=/home/USER/.local/share/mail/
+
+[user]
+name=Your Name
+primary_email=primary@example.com
+other_email=secondary@example.com
+
+[new]
+tags=unread;inbox;
+
+[search]
+exclude_tags=deleted;spam;
+
+[maildir]
+synchronize_flags=true
+
+[crypto]
+gpg_path=gpg
 ```
 
-## 8. Launch aerc
+Initial index:
 
 ```bash
-aerc
+notmuch new
 ```
 
-Key bindings:
-- `Ctrl+s` - sync mail (runs mbsync)
-- `j/k` - navigate messages
-- `Enter` - view message
-- `C` or `m` - compose
-- `rq` - reply with quote
-- `d` - delete
-- `a` - archive
-- `q` - quit
+## 4. Configure msmtp
 
-## Auto-Sync with goimapnotify
+`~/.config/msmtp/config` (chmod 600):
 
-`goimapnotify` uses IMAP IDLE to maintain a persistent connection to the mail server. When new mail arrives, the server pushes a notification instantly and goimapnotify triggers `mbsync`. If the server doesn't support IDLE, it falls back to polling every 15 minutes.
+```
+defaults
+auth on
+tls on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+logfile ~/.local/share/msmtp/msmtp.log
 
-### Configure goimapnotify
+account your@email.com
+host smtp.example.com
+port 587
+tls_starttls on
+from your@email.com
+user your@email.com
+passwordeval pass mail/your@email.com
+
+account default : your@email.com
+```
+
+## 5. mailsync Script
+
+`~/.local/bin/mailsync` — on-demand sync with new-mail notifications.
+
+- Without flag: interactive — shows sync status and per-message notifications
+- With `-s`: silent (for cron) — only shows new-mail notifications, errors always shown
+
+New-mail detection: saves a timestamp before sync so that newly downloaded files are guaranteed newer. After sync, `find -newer` locates new inbox mail. For 1–5 messages: sender + subject per mail. For more than 5: summary notification. Prevents parallel runs via `pgrep mbsync`. Lockfile `/tmp/mailsync-running` is read by the dwmblocks mail module.
+
+## 6. Automatic Sync via Cron
 
 ```bash
-cp ~/.config/imapnotify/account1.conf.yaml.example ~/.config/imapnotify/account1.conf.yaml
-nvim ~/.config/imapnotify/account1.conf.yaml
+crontab -e
 ```
 
-Replace placeholders to match your mbsyncrc (host, username, passwordCMD, account name).
+```
+DISPLAY=:0
+*/15 * * * * ~/.local/bin/mailsync -s
+```
 
-### Run
+`DISPLAY=:0` is required since cron jobs don't inherit the desktop session. `DBUS_SESSION_BUS_ADDRESS` is set by the script itself when absent.
+
+Enable cronie if not already running:
 
 ```bash
-goimapnotify -conf ~/.config/imapnotify/account1.conf.yaml
+systemctl enable --now cronie
 ```
 
-For multiple accounts, create one config file per account and run one instance each.
+## 7. dwmblocks Mail Module
 
-### Autostart
+`sb-mailbox` shows unread inbox count. Displays `🔃` while sync is running (lockfile present). Left click opens neomutt, middle click triggers a manual sync.
 
-The `mailnotify` script in `~/.local/bin/` validates and launches `goimapnotify` for all config files in `~/.config/imapnotify/` (excluding `.example` files). It is started in `.xinitrc`:
+## Verification
 
 ```bash
-mailnotify &
+# Manual sync with output
+mailsync
+
+# Silent sync (as cron runs it)
+mailsync -s
+
+# Count unread inbox messages
+find ~/.local/share/mail -path "*/[Ii][Nn][Bb][Oo][Xx]/new/*" -type f | wc -l
+
+# notmuch search
+notmuch search tag:unread
 ```
-
-### Desktop Notifications
-
-`mailnotify-newmail` in `~/.local/bin/` is called by `onNewMailPost` in each imapnotify config. It parses new mail in `INBOX/new/` across all accounts, decodes MIME headers (From/Subject) via perl, and sends `notify-send` notifications with bold sender and subject. For >5 new mails it sends a single summary instead. It also signals dwmblocks (RTMIN+6) to refresh the mail count immediately.
-
-The full flow: IMAP IDLE event → `mbsync` syncs mail → `mailnotify-newmail` sends notifications + refreshes dwmblocks.
-
-Set it in your imapnotify config:
-
-```yaml
-onNewMail: "mbsync your@email.com"
-onNewMailPost: "mailnotify-newmail"
-```
-
-### dwmblocks Module
-
-`~/.local/src/dwmblocks/scripts/mail.sh` shows an envelope icon with the count of unread mail across all accounts (signal 6, updates every 60s). It counts mail in both `INBOX/new/` and unseen mail in `INBOX/cur/` (no `S` flag). Hidden when count is 0. Left click opens aerc in `$TERMINAL`.
-
-## Multiple Accounts
-
-Add additional account blocks to both `~/.mbsyncrc` and `~/.config/aerc/accounts.conf`. Use unique account names for each.
-
-## Troubleshooting
-
-**Folders not showing**: Check `Patterns` in mbsyncrc matches server folder names. Run `mbsync -l account1` to list remote folders.
-
-**Sent mail not saved**: Verify `copy-to` in accounts.conf matches actual Sent folder name.

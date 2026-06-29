@@ -1,7 +1,5 @@
 ttf-joypixels
 naps2-bin
 librewolf-bin
-abook
 pam_ssh
 pam-gnupg
-newsraft

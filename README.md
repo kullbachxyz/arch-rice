@@ -1,36 +1,44 @@
 # arch-rice
 
-Post-install setup for Arch Linux with X + dwm.
-
-![Screenshot](screenshot.png)
+Post-install setup for Arch Linux with X + dwm. Repos hosted on `git.lokal.kullbach.net`.
 
 ## Structure
-- `install.sh` — installs packages, sets up yay, builds dwm/dwmblocks/dmenu/st from source.
-- `packages/pacman.txt` — repo packages.
+
+- `install.sh` — installs packages, builds suckless tools and abook from source, sets up dotfiles and PAM.
+- `packages/pacman.txt` — official repo packages.
 - `packages/aur.txt` — AUR packages.
-- `config/librewolf-overrides.js` — LibreWolf hardening overrides (appended to arkenfox user.js).
-- `scripts/check-installed.sh` — checks what from the lists is already installed.
+- `docs/` — setup guides for email, SSH/GPG key unlock, hibernate, pass.
+- `scripts/check-installed.sh` — checks what from the package lists is already installed.
+
+## What install.sh does
+
+1. Installs pacman and AUR packages
+2. Builds dwm, dwmblocks, dmenu, st, abook from source (`~/.local/src/`)
+3. Clones dotfiles bare repo to `~/.conf`
+4. Configures PAM for automatic SSH and GPG key unlock at TTY login
+5. Configures PAM for gnome-keyring auto-unlock
+6. Masks user services that are started manually via `.xinitrc`
+7. Sets zsh as default shell
 
 ## Usage
+
 ```bash
 ./install.sh
 ```
 
+SSH key for `git.lokal.kullbach.net` must be available before running — the script clones all repos via SSH.
+
 Check installed packages only:
+
 ```bash
 ./scripts/check-installed.sh
 ```
 
-## TODO
-- [x] Ensure dmenu fork includes `dmenu_path` and `dmenu_run` (commit scripts so `make install` works cleanly on fresh systems).
-- [x] Temporary NOPASSWD sudoers option for fully unattended installs.
-- [x] Understand pass dbus issue.
-- [x] Prevent double-start of mpd (user service vs `.xinitrc`) in all contexts.
-- [x] Fix keyring issue for Electron apps (PAM config + xinitrc bootstrap via secret-tool).
-- [x] Add lf-git and get image previews to work.
-- [x] Add aerc & mbsync. See [docs/email-setup.md](docs/email-setup.md).
-- [x] SSH agent setup: Using `pam_ssh` (AUR) for automatic SSH key unlock at login. See [docs/ssh-key-setup.md](docs/ssh-key-setup.md).
-- [x] Add `.config/shell/aliasrc`.
-- [x] Use `.zprofile` for environment exports (removed `.xprofile`).
-- [x] Fix lf previews
-- [x] Pipewire startup issue (fixed now with .xinitrc call)
+## Docs
+
+- [Email setup](docs/email-setup.md) — mbsync + notmuch + neomutt + cron
+- [SSH/GPG key unlock](docs/pam-ssh-gnupg-setup.md) — automatic unlock at TTY login via pam_ssh + pam-gnupg
+- [SSH key setup](docs/ssh-key-setup.md)
+- [GPG key setup](docs/gpg-key-setup.md)
+- [pass multi-key setup](docs/pass-multi-key-setup.md)
+- [Hibernate setup](docs/hibernate-setup.md)

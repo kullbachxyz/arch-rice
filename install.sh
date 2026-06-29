@@ -22,14 +22,14 @@ bootstrap_repo() {
   local tmpdir
   tmpdir="$(mktemp -d)"
   if command -v git >/dev/null 2>&1; then
-    git clone https://github.com/kullbachxyz/arch-rice.git "$tmpdir/arch-rice"
+    git clone git@git.lokal.kullbach.net:kullbachxyz/arch-rice.git "$tmpdir/arch-rice"
   else
     if command -v pacman >/dev/null 2>&1; then
       sudo pacman -Sy --noconfirm git
-      git clone https://github.com/kullbachxyz/arch-rice.git "$tmpdir/arch-rice"
+      git clone git@git.lokal.kullbach.net:kullbachxyz/arch-rice.git "$tmpdir/arch-rice"
     else
     curl -L -o "$tmpdir/arch-rice.tar.gz" \
-      https://github.com/kullbachxyz/arch-rice/archive/refs/heads/main.tar.gz
+      https://git.lokal.kullbach.net/kullbachxyz/arch-rice/archive/main.tar.gz
     tar -xzf "$tmpdir/arch-rice.tar.gz" -C "$tmpdir"
     mv "$tmpdir/arch-rice-main" "$tmpdir/arch-rice"
     fi
@@ -155,16 +155,16 @@ build_suckless() {
   mkdir -p "$SRC_DIR"
 
   local repos=(
-    "https://github.com/kullbachxyz/dwm"
-    "https://github.com/kullbachxyz/dwmblocks"
-    "https://github.com/kullbachxyz/dmenu"
-    "https://github.com/kullbachxyz/st"
-    "https://github.com/kullbachxyz/slock"
+    "git@git.lokal.kullbach.net:kullbachxyz/dwm.git"
+    "git@git.lokal.kullbach.net:kullbachxyz/dwmblocks.git"
+    "git@git.lokal.kullbach.net:kullbachxyz/dmenu.git"
+    "git@git.lokal.kullbach.net:kullbachxyz/st.git"
+    "git@git.lokal.kullbach.net:kullbachxyz/abook.git"
   )
 
   for repo in "${repos[@]}"; do
     local name
-    name="$(basename "$repo")"
+    name="$(basename "$repo" .git)"
     if [[ -d "$SRC_DIR/$name/.git" ]]; then
       git -C "$SRC_DIR/$name" pull --ff-only
     else
@@ -194,7 +194,7 @@ build_suckless() {
 }
 
 setup_dotfiles() {
-  local repo_url="https://github.com/kullbachxyz/dotfiles"
+  local repo_url="git@git.lokal.kullbach.net:kullbachxyz/dotfiles.git"
   local git_dir="${HOME}/.conf"
   local work_tree="${HOME}"
   local backup_dir="${HOME}/.conf-backup-$(date +%Y%m%d%H%M%S)"
@@ -284,172 +284,61 @@ mask_user_services() {
 }
 
 
-setup_pam_ssh() {
+setup_pam_ssh_gnupg() {
   local pam_system_login="/etc/pam.d/system-login"
 
-  if ! pacman -Qi pam_ssh >/dev/null 2>&1; then
-    log "pam_ssh not installed; skipping PAM ssh setup."
+  if ! pacman -Qi pam_ssh >/dev/null 2>&1 || ! pacman -Qi pam-gnupg >/dev/null 2>&1; then
+    log "pam_ssh or pam-gnupg not installed; skipping PAM ssh/gnupg setup."
     return 0
   fi
 
-  if grep -q "pam_ssh.so" "$pam_system_login" 2>/dev/null; then
-    log "pam_ssh already configured in system-login."
+  if grep -q "pam_ssh.so" "$pam_system_login" 2>/dev/null && \
+     grep -q "pam_gnupg.so" "$pam_system_login" 2>/dev/null; then
+    log "pam_ssh and pam_gnupg already configured in system-login."
     return 0
   fi
 
-  log "Configuring PAM for automatic SSH key unlock..."
+  log "Configuring PAM for automatic SSH and GPG key unlock..."
 
-  # Add auth line after "auth include system-auth"
-  sudo sed -i '/^auth.*include.*system-auth$/a auth       optional   pam_ssh.so       try_first_pass' "$pam_system_login"
+  sudo tee "$pam_system_login" >/dev/null << 'PAMEOF'
+#%PAM-1.0
 
-  # Add session line at the end
-  echo "session    optional   pam_ssh.so" | sudo tee -a "$pam_system_login" >/dev/null
+auth       required   pam_shells.so
+auth       requisite  pam_nologin.so
+auth       include    system-auth
+auth       optional   pam_gnupg.so store-only
+auth       optional   pam_ssh.so try_first_pass
 
-  # Create login-keys.d directory
+account    required   pam_access.so
+account    required   pam_nologin.so
+account    include    system-auth
+
+password   include    system-auth
+
+session    optional   pam_loginuid.so
+session    optional   pam_keyinit.so force revoke
+session    include    system-auth
+session    optional   pam_lastlog2.so silent
+session    optional   pam_motd.so
+session    optional   pam_mail.so dir=/var/spool/mail standard quiet
+session    optional   pam_umask.so
+-session   optional   pam_systemd.so
+session    required   pam_env.so
+session    optional   pam_gnupg.so
+session    optional   pam_ssh.so
+PAMEOF
+
   mkdir -p "${HOME}/.ssh/login-keys.d"
 
-  log "pam_ssh configured. See docs/ssh-key-setup.md for adding SSH keys."
-}
-
-setup_pam_gnupg() {
-  local pam_system_login="/etc/pam.d/system-login"
-
-  if ! pacman -Qi pam-gnupg >/dev/null 2>&1; then
-    log "pam-gnupg not installed; skipping PAM gnupg setup."
-    return 0
-  fi
-
-  if grep -q "pam_gnupg.so" "$pam_system_login" 2>/dev/null; then
-    log "pam_gnupg already configured in system-login."
-    return 0
-  fi
-
-  log "Configuring PAM for automatic GPG key unlock..."
-
-  # Add auth line after "auth include system-auth"
-  sudo sed -i '/^auth.*include.*system-auth$/a auth       optional   pam_gnupg.so     store-only' "$pam_system_login"
-
-  # Add session line at the end
-  echo "session    optional   pam_gnupg.so" | sudo tee -a "$pam_system_login" >/dev/null
-
-  # Configure gpg-agent for preset passphrases
   local gpg_agent_conf="${HOME}/.gnupg/gpg-agent.conf"
   mkdir -p "${HOME}/.gnupg"
   if ! grep -q "allow-preset-passphrase" "$gpg_agent_conf" 2>/dev/null; then
     printf 'allow-preset-passphrase\nmax-cache-ttl 86400\n' >> "$gpg_agent_conf"
   fi
 
-  log "pam_gnupg configured. See docs/gpg-key-setup.md for key setup."
+  log "pam_ssh and pam_gnupg configured. See pam-ssh-gnupg-setup.md for key setup."
 }
 
-setup_librewolf_hardening() {
-  if ! command -v librewolf >/dev/null 2>&1; then
-    log "LibreWolf not found; skipping hardening."
-    return 0
-  fi
-
-  local arkenfox_url="https://raw.githubusercontent.com/arkenfox/user.js/master/user.js"
-  local overrides_file="$ROOT_DIR/config/librewolf-overrides.js"
-  local profiles_dir="${HOME}/.librewolf"
-  local profiles_ini="${profiles_dir}/profiles.ini"
-  local policy_file="/usr/lib/librewolf/distribution/policies.json"
-
-  log "Ensuring LibreWolf profile exists..."
-  if [[ ! -f "$profiles_ini" ]]; then
-    mkdir -p "$profiles_dir"
-    local default_profile="default.default-default"
-    mkdir -p "${profiles_dir}/${default_profile}"
-    cat > "$profiles_ini" << EOF
-[General]
-StartWithLastProfile=1
-
-[Profile0]
-Name=default
-IsRelative=1
-Path=${default_profile}
-Default=1
-EOF
-    log "Created LibreWolf profile at ${profiles_dir}/${default_profile}."
-  fi
-
-  local profile_rel
-  profile_rel="$(sed -n 's/^Path=\(.*\.default-default\)$/\1/p' "$profiles_ini" | head -n 1)"
-
-  if [[ -z "$profile_rel" ]]; then
-    log "LibreWolf default profile not found; skipping hardening."
-    return 0
-  fi
-
-  local profile_path="${profiles_dir}/${profile_rel}"
-  if [[ ! -d "$profile_path" ]]; then
-    log "LibreWolf profile path missing; skipping hardening."
-    return 0
-  fi
-
-  log "Applying LibreWolf hardening to ${profile_path}."
-
-  if [[ -f "$profile_path/user.js" ]]; then
-    mv "$profile_path/user.js" "$profile_path/user.js.bak_$(date +%F_%T)"
-  fi
-
-  if [[ ! -f "$overrides_file" ]]; then
-    log "Overrides file not found at $overrides_file; skipping hardening."
-    return 0
-  fi
-
-  if ! curl -fsSL "$arkenfox_url" -o "$profile_path/user.js"; then
-    log "Failed to download arkenfox user.js; skipping hardening."
-    return 0
-  fi
-
-  printf '\n\n' >> "$profile_path/user.js"
-  cat "$overrides_file" >> "$profile_path/user.js"
-
-  if command -v jq >/dev/null 2>&1 && [[ -f "$policy_file" ]]; then
-    local backup="${policy_file}.bak_$(date +%F_%T)"
-    sudo cp "$policy_file" "$backup"
-
-    sudo jq '
-      .policies.ExtensionSettings = (.policies.ExtensionSettings // {}) |
-      .policies.ExtensionSettings["jid1-BoFifL9Vbdl2zQ@jetpack"] = {
-        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/decentraleyes/latest.xpi",
-        "installation_mode": "normal_installed"
-      } |
-      .policies.ExtensionSettings["idcac-pub@guus.ninja"] = {
-        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/istilldontcareaboutcookies/latest.xpi",
-        "installation_mode": "normal_installed"
-      } |
-      .policies.ExtensionSettings["uBlock0@raymondhill.net"] = {
-        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi",
-        "installation_mode": "normal_installed"
-      } |
-      .policies.ExtensionSettings["{d7742d87-e61d-4b78-b8a1-b469842139fa}"] = {
-        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/vimium-ff/latest.xpi",
-        "installation_mode": "normal_installed"
-      }
-    ' "$policy_file" | sudo tee "$policy_file.tmp" >/dev/null
-
-    sudo mv "$policy_file.tmp" "$policy_file"
-  else
-    log "policies.json not found or jq missing; skipping extension policies."
-  fi
-
-  # Force resistFingerprinting off in librewolf.cfg via lockPref (cannot be overridden)
-  local lw_cfg="/usr/lib/librewolf/librewolf.cfg"
-  if [[ -f "$lw_cfg" ]]; then
-    if ! grep -q 'lockPref("privacy.resistFingerprinting"' "$lw_cfg" 2>/dev/null; then
-      log "Locking resistFingerprinting=false in librewolf.cfg for dark mode support."
-      # Replace existing defaultPref with lockPref, or append if not present
-      if grep -q 'defaultPref("privacy.resistFingerprinting"' "$lw_cfg" 2>/dev/null; then
-        sudo sed -i 's/defaultPref("privacy.resistFingerprinting".*/lockPref("privacy.resistFingerprinting", false);/' "$lw_cfg"
-      else
-        printf '\n// Allow dark mode detection\nlockPref("privacy.resistFingerprinting", false);\n' | sudo tee -a "$lw_cfg" >/dev/null
-      fi
-    fi
-  fi
-
-  pkill -u "$USER" librewolf >/dev/null 2>&1 || true
-}
 set_default_shell() {
   if command -v zsh >/dev/null 2>&1; then
     if [[ "${SHELL:-}" != "/bin/zsh" ]]; then
@@ -476,10 +365,8 @@ main() {
   setup_mpd_dirs
   setup_abook
   setup_keyring_pam
-  setup_pam_ssh
-  setup_pam_gnupg
+  setup_pam_ssh_gnupg
   mask_user_services
-  setup_librewolf_hardening
   build_suckless
   set_default_shell
   disable_temp_nopasswd

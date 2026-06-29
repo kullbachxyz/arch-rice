@@ -1,19 +1,19 @@
 # arch-rice
 
-Post-install setup for Arch Linux with X + dwm. Repos hosted on `git.lokal.kullbach.net`.
+Post-install setup for Arch Linux with X + dwm. Repos are hosted on `git.lokal.kullbach.net`.
 
 ## Structure
 
-- `install.sh` — installs packages, builds suckless tools and abook from source, sets up dotfiles and PAM.
-- `packages/pacman.txt` — official repo packages.
-- `packages/aur.txt` — AUR packages.
-- `docs/` — setup guides for email, SSH/GPG key unlock, hibernate, pass.
-- `scripts/check-installed.sh` — checks what from the package lists is already installed.
+- `install.sh` - installs packages, builds suckless tools and abook from source, sets up dotfiles and PAM.
+- `packages/pacman.txt` - official repo packages.
+- `packages/aur.txt` - AUR packages.
+- `docs/` - setup guides for email, SSH/GPG key unlock, hibernate, pass.
+- `scripts/check-installed.sh` - checks what from the package lists is already installed.
 
 ## What install.sh does
 
 1. Installs pacman and AUR packages
-2. Builds dwm, dwmblocks, dmenu, st, abook from source (`~/.local/src/`)
+2. Builds dwm, dwmblocks, dmenu, st, abook from source into `~/.local/src/`
 3. Clones dotfiles bare repo to `~/.dotfiles`
 4. Configures PAM for automatic SSH and GPG key unlock at TTY login
 5. Configures PAM for gnome-keyring auto-unlock
@@ -22,11 +22,11 @@ Post-install setup for Arch Linux with X + dwm. Repos hosted on `git.lokal.kullb
 
 ## Usage
 
+SSH key for `git.lokal.kullbach.net` must be available before running. The script clones all repos via SSH.
+
 ```bash
 ./install.sh
 ```
-
-SSH key for `git.lokal.kullbach.net` must be available before running — the script clones all repos via SSH.
 
 Check installed packages only:
 
@@ -36,8 +36,8 @@ Check installed packages only:
 
 ## Docs
 
-- [Email setup](docs/email-setup.md) — mbsync + notmuch + neomutt + cron
-- [SSH/GPG key unlock](docs/pam-ssh-gnupg-setup.md) — automatic unlock at TTY login via pam_ssh + pam-gnupg
+- [Email setup](docs/email-setup.md) - mbsync + notmuch + neomutt + cron
+- [SSH/GPG key unlock](docs/pam-ssh-gnupg-setup.md) - automatic unlock at TTY login via pam_ssh + pam-gnupg
 - [SSH key setup](docs/ssh-key-setup.md)
 - [GPG key setup](docs/gpg-key-setup.md)
 - [pass multi-key setup](docs/pass-multi-key-setup.md)

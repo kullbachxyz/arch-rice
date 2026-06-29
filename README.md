@@ -22,7 +22,7 @@ Post-install setup for Arch Linux with X + dwm. Repos are hosted on `git.lokal.k
 
 ## Usage
 
-SSH key for `git.lokal.kullbach.net` must be available before running. The script clones all repos via SSH.
+The script clones all repos via HTTPS. No SSH key needed to run the install.
 
 ```bash
 ./install.sh

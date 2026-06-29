@@ -206,9 +206,9 @@ setup_dotfiles() {
 
   git clone --bare "$repo_url" "$git_dir"
 
-  if ! git --git-dir="$git_dir" --work-tree="$work_tree" checkout; then
+  if ! git --git-dir="$git_dir" --work-tree="$work_tree" checkout master; then
     mkdir -p "$backup_dir"
-    git --git-dir="$git_dir" --work-tree="$work_tree" checkout 2>&1 \
+    git --git-dir="$git_dir" --work-tree="$work_tree" checkout master 2>&1 \
       | awk '/^\s+/ { gsub(/^[[:space:]]+|[[:space:]]+$/, ""); print }' \
       | while read -r path; do
           if [[ -e "$work_tree/$path" ]]; then
@@ -216,7 +216,7 @@ setup_dotfiles() {
             mv "$work_tree/$path" "$backup_dir/$path"
           fi
         done
-    git --git-dir="$git_dir" --work-tree="$work_tree" checkout
+    git --git-dir="$git_dir" --work-tree="$work_tree" checkout master
   fi
 
   git --git-dir="$git_dir" --work-tree="$work_tree" config --local status.showUntrackedFiles no

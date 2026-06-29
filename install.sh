@@ -209,7 +209,7 @@ setup_dotfiles() {
   if ! git --git-dir="$git_dir" --work-tree="$work_tree" checkout; then
     mkdir -p "$backup_dir"
     git --git-dir="$git_dir" --work-tree="$work_tree" checkout 2>&1 \
-      | awk '/^\s+/' \
+      | awk '/^\s+/ { gsub(/^[[:space:]]+|[[:space:]]+$/, ""); print }' \
       | while read -r path; do
           if [[ -e "$work_tree/$path" ]]; then
             mkdir -p "$(dirname "$backup_dir/$path")"

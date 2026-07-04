@@ -93,6 +93,7 @@ newsboat
 i3
 polybar
 autotiling
+python
 rofi
 ripgrep
 brightnessctl

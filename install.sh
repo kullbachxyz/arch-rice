@@ -152,12 +152,10 @@ ensure_aur_packages() {
   fi
 }
 
-build_suckless() {
+build_from_source() {
   mkdir -p "$SRC_DIR"
 
   local repos=(
-    "https://git.lokal.kullbach.net/kullbachxyz/dwm.git"
-    "https://git.lokal.kullbach.net/kullbachxyz/dwmblocks.git"
     "https://git.lokal.kullbach.net/kullbachxyz/dmenu.git"
     "https://git.lokal.kullbach.net/kullbachxyz/st.git"
     "https://git.lokal.kullbach.net/kullbachxyz/abook.git"
@@ -368,11 +366,11 @@ main() {
   setup_keyring_pam
   setup_pam_ssh_gnupg
   mask_user_services
-  build_suckless
+  build_from_source
   set_default_shell
   disable_temp_nopasswd
 
-  log "Done. Use .xinitrc + startx as desired."
+  log "Done. Run startx to start i3."
   log "Note: log out and back in for the default shell change to take effect."
 }
 

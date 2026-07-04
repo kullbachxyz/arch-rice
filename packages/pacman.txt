@@ -7,7 +7,6 @@ lf
 xorg-server
 xorg-xinit
 xorg-xrandr
-xorg-xsetroot
 xorg-xset
 xorg-xev
 xorg-xprop
@@ -91,6 +90,9 @@ libreoffice-fresh
 calibre
 syncthing
 newsboat
+i3
+polybar
+autotiling
 rofi
 ripgrep
 brightnessctl

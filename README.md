@@ -42,3 +42,4 @@ Check installed packages only:
 - [GPG key setup](docs/gpg-key-setup.md)
 - [pass multi-key setup](docs/pass-multi-key-setup.md)
 - [Hibernate setup](docs/hibernate-setup.md)
+- [Gnome Keyring setup](docs/gnome-keyring-setup.md) - PAM auto-unlock for Nextcloud and other credential storage

@@ -247,8 +247,8 @@ auth       include      system-local-login
 auth       optional     pam_gnome_keyring.so
 account    include      system-local-login
 session    include      system-local-login
-session    optional     pam_gnome_keyring.so auto_start
 password   include      system-local-login
+session    optional     pam_gnome_keyring.so auto_unlock
 PAMEOF
   fi
 
@@ -276,6 +276,8 @@ mask_user_services() {
     pipewire-pulse.socket
     pipewire-pulse.service
     wireplumber.service
+    gnome-keyring-daemon.socket
+    gnome-keyring-daemon.service
   )
 
   systemctl --user mask "${units[@]}" >/dev/null 2>&1 || true

@@ -1,5 +1,3 @@
 ttf-joypixels
 naps2-bin
 librewolf-bin
-pam_ssh
-pam-gnupg

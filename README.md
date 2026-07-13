@@ -36,10 +36,5 @@ Check installed packages only:
 
 ## Docs
 
-- [Email setup](docs/email-setup.md) - mbsync + notmuch + neomutt + cron
-- [SSH/GPG key unlock](docs/ssh-key-setup.md) - automatic unlock at TTY login via pam_ssh + pam-gnupg
-- [SSH key setup](docs/ssh-key-setup.md)
-- [GPG key setup](docs/gpg-key-setup.md)
-- [pass multi-key setup](docs/pass-multi-key-setup.md)
 - [Hibernate setup](docs/hibernate-setup.md)
 - [Gnome Keyring setup](docs/gnome-keyring-setup.md) - PAM auto-unlock for Nextcloud and other credential storage

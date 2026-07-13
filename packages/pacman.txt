@@ -84,6 +84,7 @@ notmuch
 msmtp
 pass
 pass-otp
+keepassxc
 cronie
 yt-dlp
 libreoffice-fresh

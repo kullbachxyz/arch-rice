@@ -96,6 +96,7 @@ Short descriptions of what gets installed.
 | msmtp | SMTP client for sending mail |
 | pass | password manager |
 | pass-otp | OTP extension for pass |
+| keepassxc | password manager + SSH agent (key storage/unlock) |
 | yt-dlp | video/audio downloader |
 | libreoffice-fresh | office suite (latest branch) |
 | calibre | ebook manager |
@@ -111,6 +112,4 @@ Short descriptions of what gets installed.
 | naps2-bin | PDF Scanner application |
 | librewolf-bin | LibreWolf browser |
 | abook | address book |
-| pam_ssh | automatic SSH key unlock at login |
-| pam-gnupg | automatic GPG key unlock at login |
 | newsraft | TUI feed reader |

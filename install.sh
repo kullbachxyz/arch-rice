@@ -285,61 +285,6 @@ mask_user_services() {
 }
 
 
-setup_pam_ssh_gnupg() {
-  local pam_system_login="/etc/pam.d/system-login"
-
-  if ! pacman -Qi pam_ssh >/dev/null 2>&1 || ! pacman -Qi pam-gnupg >/dev/null 2>&1; then
-    log "pam_ssh or pam-gnupg not installed; skipping PAM ssh/gnupg setup."
-    return 0
-  fi
-
-  if grep -q "pam_ssh.so" "$pam_system_login" 2>/dev/null && \
-     grep -q "pam_gnupg.so" "$pam_system_login" 2>/dev/null; then
-    log "pam_ssh and pam_gnupg already configured in system-login."
-    return 0
-  fi
-
-  log "Configuring PAM for automatic SSH and GPG key unlock..."
-
-  sudo tee "$pam_system_login" >/dev/null << 'PAMEOF'
-#%PAM-1.0
-
-auth       required   pam_shells.so
-auth       requisite  pam_nologin.so
-auth       include    system-auth
-auth       optional   pam_gnupg.so store-only
-auth       optional   pam_ssh.so try_first_pass
-
-account    required   pam_access.so
-account    required   pam_nologin.so
-account    include    system-auth
-
-password   include    system-auth
-
-session    optional   pam_loginuid.so
-session    optional   pam_keyinit.so force revoke
-session    include    system-auth
-session    optional   pam_lastlog2.so silent
-session    optional   pam_motd.so
-session    optional   pam_mail.so dir=/var/spool/mail standard quiet
-session    optional   pam_umask.so
--session   optional   pam_systemd.so
-session    required   pam_env.so
-session    optional   pam_gnupg.so
-session    optional   pam_ssh.so
-PAMEOF
-
-  mkdir -p "${HOME}/.ssh/login-keys.d"
-
-  local gpg_agent_conf="${HOME}/.gnupg/gpg-agent.conf"
-  mkdir -p "${HOME}/.gnupg"
-  if ! grep -q "allow-preset-passphrase" "$gpg_agent_conf" 2>/dev/null; then
-    printf 'allow-preset-passphrase\nmax-cache-ttl 86400\n' >> "$gpg_agent_conf"
-  fi
-
-  log "pam_ssh and pam_gnupg configured. See pam-ssh-gnupg-setup.md for key setup."
-}
-
 set_default_shell() {
   if command -v zsh >/dev/null 2>&1; then
     if [[ "${SHELL:-}" != "/bin/zsh" ]]; then
@@ -366,7 +311,6 @@ main() {
   setup_mpd_dirs
   setup_abook
   setup_keyring_pam
-  setup_pam_ssh_gnupg
   mask_user_services
   build_from_source
   set_default_shell

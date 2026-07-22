@@ -1,0 +1,129 @@
+/* ============================================================================
+ * MMD — Mudita Mindful Design theme for Thunderbird chrome (TB 152, Bolt tokens)
+ *
+ * Strategy: override Thunderbird's *foundation* design tokens once. Almost the
+ * whole UI derives from these, so we get a consistent pure-monochrome look
+ * without brittle per-widget selectors. A few spots use hardcoded greys or
+ * system colors (headerbar, compose) and need explicit rules further down.
+ *
+ * light-dark(<light>, <dark>) resolves to the dark value because user.js sets
+ * ui.systemUsesDarkTheme = 1 (MMD is dark-only).
+ *
+ * Tokens mirror our Xresources: bg #fff/#000, fg #000/#fff, muted #4a/#b0,
+ * border/divider #ccc/#444, code/elevated #f2f2f2/#141414. Selection inverts
+ * (like dwm/dmenu): white-on-black in dark, black-on-white in light.
+ * ========================================================================== */
+
+:root,
+:host {
+  /* --- surfaces (0 = base ... 4 = most elevated) --- */
+  --layout-background-0: light-dark(#ffffff, #000000) !important;
+  --layout-background-1: light-dark(#ffffff, #000000) !important;
+  --layout-background-2: light-dark(#f2f2f2, #141414) !important;
+  --layout-background-3: light-dark(#e9e9e9, #1a1a1a) !important;
+  --layout-background-4: light-dark(#dcdcdc, #242424) !important;
+
+  /* --- text --- */
+  --layout-color-0: light-dark(#000000, #ffffff) !important;
+  --layout-color-1: light-dark(#000000, #ffffff) !important;
+  --layout-color-2: light-dark(#4a4a4a, #b0b0b0) !important;
+  --layout-color-3: light-dark(#4a4a4a, #b0b0b0) !important;
+
+  /* --- borders / dividers --- */
+  --layout-border-0: light-dark(#cccccc, #444444) !important;
+  --layout-border-1: light-dark(#cccccc, #444444) !important;
+  --layout-border-2: light-dark(#cccccc, #444444) !important;
+  --sidebar-border-color: light-dark(#cccccc, #444444) !important;
+  --splitter-color: light-dark(#cccccc, #444444) !important;
+  --chrome-content-separator-color: light-dark(#cccccc, #444444) !important;
+
+  /* --- selection / highlight: INVERTED (fg becomes the fill) --- */
+  --selected-item-color: light-dark(#000000, #ffffff) !important;
+  --selected-item-text-color: light-dark(#ffffff, #000000) !important;
+  --sidebar-highlight-background-color: light-dark(#000000, #ffffff) !important;
+  --sidebar-highlight-text-color: light-dark(#ffffff, #000000) !important;
+
+  /* --- kill every colored accent (blue/teal/purple/orange/pink) --- */
+  --color-primary-default: light-dark(#000000, #ffffff) !important;
+  --color-primary-hover: light-dark(#333333, #e0e0e0) !important;
+  --color-primary-pressed: light-dark(#555555, #c0c0c0) !important;
+  --color-primary-soft: light-dark(#f2f2f2, #141414) !important;
+  --color-text-highlight: light-dark(#000000, #ffffff) !important;
+  --color-accent-blue: light-dark(#000000, #ffffff) !important;
+  --color-accent-teal: light-dark(#000000, #ffffff) !important;
+  --color-accent-purple: light-dark(#000000, #ffffff) !important;
+  --color-accent-orange: light-dark(#4a4a4a, #b0b0b0) !important;
+  --color-accent-pink: light-dark(#000000, #ffffff) !important;
+  --new-folder-color: light-dark(#000000, #ffffff) !important;
+  --button-link-text-color: light-dark(#000000, #ffffff) !important;
+  --button-link-active-text-color: light-dark(#333333, #e0e0e0) !important;
+
+  /* --- Bolt semantic surfaces/text (newer views) --- */
+  --color-surface-base: light-dark(#ffffff, #000000) !important;
+  --color-surface-raised: light-dark(#ffffff, #141414) !important;
+  --color-surface-subtle: light-dark(#f2f2f2, #0d0d0d) !important;
+  --color-surface-lower: light-dark(#f2f2f2, #000000) !important;
+  --color-surface-deep: light-dark(#e9e9e9, #1a1a1a) !important;
+  --color-surface-border: light-dark(#cccccc, #444444) !important;
+  --color-surface-border-intense: light-dark(#999999, #666666) !important;
+  --color-text-base: light-dark(#000000, #ffffff) !important;
+  --color-text-secondary: light-dark(#4a4a4a, #e0e0e0) !important;
+  --color-text-muted: light-dark(#4a4a4a, #b0b0b0) !important;
+
+  /* --- inputs / search bar --- */
+  --toolbar-field-background-color: light-dark(#ffffff, #141414) !important;
+  --toolbar-field-color: light-dark(#000000, #ffffff) !important;
+  --toolbar-field-border-color: light-dark(#cccccc, #444444) !important;
+  --toolbar-field-focus-border-color: light-dark(#000000, #ffffff) !important;
+
+  /* --- flat monochrome focus ring --- */
+  --focus-outline-color: light-dark(#000000, #ffffff) !important;
+
+  /* Tab strip: TB lays a translucent overlay (rgba(255,255,255,.15) in dark)
+   * over the bar, greying it. Drop it so the pure #000 surface shows. */
+  --tabs-toolbar-background-color: transparent !important;
+
+}
+
+/* Selected message row: keep it fully inverted (white bg / black text + icons)
+ * even when the window is unfocused. TB only flips the row text to black on
+ * :focus/:focus-within and otherwise dims the row to a bluish grey, which left
+ * white-on-white here. Force the focused look onto the plain .selected state. */
+[is="tree-view-table-body"] > .table-layout.selected {
+  background-color: var(--selected-item-color) !important;
+  color: var(--selected-item-text-color) !important;
+}
+[is="tree-view-table-body"] > .table-layout.selected button,
+[is="tree-view-table-body"] > .table-layout.selected .subject,
+[is="tree-view-table-body"] > .table-layout.selected :is(.tag-icon, img) {
+  color: var(--selected-item-text-color) !important;
+}
+
+/* One humanist UI font everywhere in the chrome. */
+* {
+  font-family: "Lato", sans-serif !important;
+}
+
+/* Main window header bar: TB paints #navigation-toolbox with the GTK CSD
+ * titlebar system colors (-moz-headerbar / ActiveCaption), which bypass our
+ * tokens. Force it to the pure surface. */
+#navigation-toolbox {
+  background-color: light-dark(#ffffff, #000000) !important;
+}
+
+/* Compose window: TB hardcodes #messageArea to #2a2a2e in dark and uses
+ * -moz-Dialog / Window system colors for the surrounding boxes. */
+#compose-toolbox,
+#composeContentBox,
+#messageArea,
+#MsgHeadersToolbar,
+#FormatToolbox {
+  background-color: light-dark(#ffffff, #000000) !important;
+  color-scheme: light dark;
+}
+
+/* Unread messages: no colored accent, just bold weight for emphasis. */
+#threadTree tr[data-properties~="unread"] {
+  font-weight: 700 !important;
+  color: var(--layout-color-0) !important;
+}

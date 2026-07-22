@@ -29,6 +29,7 @@ ttf-iosevka-nerd
 ttf-sharetech-mono-nerd
 noto-fonts-emoji
 noto-fonts-cjk
+ttf-lato
 nsxiv
 hugo
 zathura
@@ -40,7 +41,11 @@ gnome-keyring
 libsecret
 gnome-themes-extra
 adwaita-icon-theme
+qt5ct
 qt6ct
+kvantum
+xsettingsd
+imagemagick
 pipewire
 pipewire-audio
 pipewire-pulse
@@ -91,9 +96,6 @@ libreoffice-fresh
 calibre
 syncthing
 newsboat
-i3
-polybar
-autotiling
 python
 rofi
 ripgrep

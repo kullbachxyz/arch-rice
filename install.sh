@@ -156,6 +156,8 @@ build_from_source() {
   mkdir -p "$SRC_DIR"
 
   local repos=(
+    "https://git.lokal.kullbach.net/kullbachxyz/dwm.git"
+    "https://git.lokal.kullbach.net/kullbachxyz/dwmblocks.git"
     "https://git.lokal.kullbach.net/kullbachxyz/dmenu.git"
     "https://git.lokal.kullbach.net/kullbachxyz/st.git"
     "https://git.lokal.kullbach.net/kullbachxyz/abook.git"
@@ -285,6 +287,40 @@ mask_user_services() {
 }
 
 
+setup_theme() {
+  # Generate the derived MMD dark assets (not stored in git; see docs/gtk.md).
+  # Configs themselves live in dotfiles; only generated output is built here.
+  if [[ -x "$ROOT_DIR/scripts/build-mmd-dark-gtk.sh" ]]; then
+    log "Building MMD-Dark GTK theme -> ~/.themes/MMD-Dark"
+    sh "$ROOT_DIR/scripts/build-mmd-dark-gtk.sh" || log "GTK theme build failed (non-fatal)."
+  fi
+  if [[ -x "$ROOT_DIR/scripts/generate-icons.sh" ]]; then
+    log "Generating HighContrastInverse icon theme"
+    sh "$ROOT_DIR/scripts/generate-icons.sh" || log "Icon generation failed (non-fatal)."
+  fi
+
+  # Inject browser-profile theming (profile dirs are per-machine -> can't live
+  # in dotfiles). Thunderbird + LibreWolf userChrome/userContent.
+  local assets="$ROOT_DIR/theme-assets"
+
+  for prof in "$HOME"/.thunderbird/*.default-release "$HOME"/.thunderbird/*.default; do
+    [[ -d "$prof" ]] || continue
+    log "Injecting Thunderbird MMD theme -> $prof"
+    mkdir -p "$prof/chrome"
+    cp "$assets"/thunderbird/chrome/*.css "$prof/chrome/" 2>/dev/null || true
+    cp "$assets"/thunderbird/user.js "$prof/user.js" 2>/dev/null || true
+  done
+
+  for prof in "$HOME"/.librewolf/*.default*; do
+    [[ -d "$prof" ]] || continue
+    log "Injecting LibreWolf MMD theme -> $prof"
+    mkdir -p "$prof/chrome"
+    cp "$assets"/librewolf/chrome/*.css "$prof/chrome/" 2>/dev/null || true
+  done
+
+  log "Chromium theme manifests: load manually from $assets/chromium-themes (see docs/browsers.md)."
+}
+
 set_default_shell() {
   if command -v zsh >/dev/null 2>&1; then
     if [[ "${SHELL:-}" != "/bin/zsh" ]]; then
@@ -313,10 +349,11 @@ main() {
   setup_keyring_pam
   mask_user_services
   build_from_source
+  setup_theme
   set_default_shell
   disable_temp_nopasswd
 
-  log "Done. Run startx to start i3."
+  log "Done. Run startx to start dwm."
   log "Note: log out and back in for the default shell change to take effect."
 }
 

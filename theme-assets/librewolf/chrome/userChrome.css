@@ -1,0 +1,57 @@
+/* MMD — DARK chrome only (light mode untouched).
+ * Mirrors the white-mode layering: bars are the muted tone (#141414),
+ * the active tab / url field is the extreme (#000) so it stands out. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --toolbar-bgcolor: #141414 !important;
+    --toolbar-color: #ffffff !important;
+    --lwt-accent-color: #141414 !important;
+    --lwt-accent-color-inactive: #141414 !important;
+
+    --tab-selected-bgcolor: #000000 !important;
+    --tabpanel-background-color: #000000 !important;
+
+    --toolbar-field-background-color: #000000 !important;
+    --toolbar-field-focus-background-color: #000000 !important;
+    --toolbar-field-color: #ffffff !important;
+    --toolbar-field-border-color: #333333 !important;
+
+    --lwt-toolbarbutton-hover-background: #262626 !important;
+    --lwt-toolbarbutton-active-background: #333333 !important;
+    --arrowpanel-background: #0a0a0a !important;
+    --arrowpanel-color: #ffffff !important;
+  }
+
+  /* Tab strip, title bar, nav bar, bookmarks bar = muted dark gray */
+  #navigator-toolbox,
+  #titlebar,
+  #nav-bar,
+  #PersonalToolbar,
+  #tabbrowser-tabs,
+  .browser-toolbar {
+    background-color: #141414 !important;
+    background-image: none !important;
+  }
+
+  /* Active tab = pure black, pops against the gray strip (like white mode) */
+  .tabbrowser-tab[selected="true"] .tab-background,
+  .tab-background[selected] {
+    background-color: #000000 !important;
+    background-image: none !important;
+  }
+
+  /* URL bar / search field = pure black */
+  #urlbar,
+  #urlbar-background,
+  #searchbar {
+    background-color: #000000 !important;
+  }
+
+  /* Popups / menus */
+  panel, menupopup, .panel-arrowcontent,
+  #urlbar .urlbarView {
+    background-color: #0a0a0a !important;
+    --panel-background: #0a0a0a !important;
+    color: #ffffff !important;
+  }
+}

@@ -1,0 +1,33 @@
+/* ============================================================================
+ * MMD — Thunderbird message content (userContent.css)
+ *
+ * All scoped to prefers-color-scheme: dark.
+ *
+ * 1) Dark message READER: TB paints the body with --color-gray-90 (#18181b,
+ *    a bluish near-black). Retune that token (+ the two lighter surface greys
+ *    it uses) to pure black so a dark message is completely black. Only active
+ *    when mail.dark-reader.enabled is on — the doc only adopts dark scheme then,
+ *    so normal (as-authored) HTML mails keep their own colors.
+ *
+ * 2) Compose EDITOR: editorContent.css hardcodes body { background: #2a2a2e }.
+ *    The editor runs in designMode, so its body is :read-write, whereas a mail
+ *    being read is :read-only — that pseudo-class targets the editor ONLY, so
+ *    real messages are never touched.
+ * ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  /* 1) reader */
+  :root {
+    --color-gray-90: #000000 !important;
+    --color-gray-80: #0a0a0a !important;
+    --color-gray-70: #141414 !important;
+  }
+
+  /* 2) compose editor surface + monochrome reply quotes */
+  body:read-write {
+    background-color: #000000 !important;
+  }
+  body:read-write span[_moz_quote="true"] {
+    color: #b0b0b0 !important;
+  }
+}

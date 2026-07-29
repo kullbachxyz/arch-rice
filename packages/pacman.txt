@@ -104,3 +104,53 @@ slock
 signal-desktop
 element-desktop
 thunderbird
+
+# --- CLI tools ---
+eza
+fd
+zoxide
+glow
+ncdu
+starship
+wget
+zip
+7zip
+most
+pandoc-cli
+pdfgrep
+perl-image-exiftool
+urlscan
+
+# --- audio (pipewire stack completion) ---
+pipewire-alsa
+alsa-utils
+
+# --- fonts ---
+ttf-ibm-plex
+
+# --- X / display utils ---
+xdotool
+unclutter
+usbutils
+xdg-user-dirs
+redshift
+feh
+imv
+
+# --- dev toolchains ---
+android-tools
+clang
+rust
+
+# --- media / creative ---
+gimp
+audacity
+ardour
+picard
+easyeffects
+lsp-plugins-lv2
+
+# --- apps ---
+nextcloud-client
+thunar
+libreoffice-fresh-de

@@ -261,6 +261,29 @@ PAMEOF
 
 }
 
+enable_services() {
+  if ! command -v systemctl >/dev/null 2>&1; then
+    return 0
+  fi
+
+  # NetworkManager is enabled by archinstall; boot/hardware units
+  # (thinkfan, hibernate) are hardware-specific and handled manually.
+  local units=(
+    bluetooth.service
+    cronie.service
+    sshd.service
+    cups.socket
+  )
+
+  for u in "${units[@]}"; do
+    if sudo systemctl enable "$u" >/dev/null 2>&1; then
+      log "Enabled $u"
+    else
+      log "enable $u failed (non-fatal)."
+    fi
+  done
+}
+
 mask_user_services() {
   if ! command -v systemctl >/dev/null 2>&1; then
     return 0
@@ -343,6 +366,7 @@ main() {
   ensure_pacman_packages
   ensure_yay
   ensure_aur_packages
+  enable_services
   setup_dotfiles
   setup_mpd_dirs
   setup_abook

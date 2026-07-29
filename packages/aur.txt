@@ -1,3 +1,6 @@
 ttf-joypixels
 naps2-bin
 librewolf-bin
+ungoogled-chromium-bin
+localsend-bin
+omnissa-horizon-client-next

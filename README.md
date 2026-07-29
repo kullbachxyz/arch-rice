@@ -1,7 +1,10 @@
 # arch-rice
 
 Post-install setup for Arch Linux with X + dwm, themed as a monochrome, e-ink-friendly
-(MMD) dark desktop. Repos are hosted on `git.lokal.kullbach.net`.
+(MMD) dark desktop. Repos are mirrored on GitHub (`github.com/kullbachxyz`).
+
+Assumes a base system installed via `archinstall`, which already handles the
+bootloader, disk/EFI setup, locale, timezone, hostname and NetworkManager.
 
 ## Structure
 
@@ -15,12 +18,23 @@ Post-install setup for Arch Linux with X + dwm, themed as a monochrome, e-ink-fr
 ## What install.sh does
 
 1. Installs pacman and AUR packages
-2. Builds dwm, dwmblocks, dmenu, st and abook from source into `~/.local/src/`
-3. Clones dotfiles bare repo to `~/.dotfiles`
-4. Configures PAM for gnome-keyring auto-unlock
-5. Masks user services that are started manually via `.xinitrc`
-6. Generates the MMD dark GTK theme + inverted icons and injects browser theming
-7. Sets zsh as default shell
+2. Enables system services (bluetooth, cronie, sshd, cups)
+3. Builds dwm, dwmblocks, dmenu, st and abook from source into `~/.local/src/`
+4. Clones dotfiles bare repo to `~/.dotfiles`
+5. Configures PAM for gnome-keyring auto-unlock
+6. Masks user services that are started manually via `.xinitrc`
+7. Generates the MMD dark GTK theme + inverted icons and injects browser theming
+8. Sets zsh as default shell
+
+## Not covered (manual / hardware-specific)
+
+These are intentionally left out of `install.sh` — either archinstall handles them
+or they depend on the specific hardware:
+
+- Bootloader, disk/EFI, locale, timezone, hostname, NetworkManager → archinstall
+- ThinkPad fan control (`thinkfan`) → see hardware notes; laptop-specific
+- Hibernate / resume → [docs/hibernate-setup.md](docs/hibernate-setup.md)
+- `syncthing` as a user service (`systemctl --user enable syncthing.service`) if used
 
 ## Usage
 

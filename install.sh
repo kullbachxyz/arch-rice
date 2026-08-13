@@ -100,9 +100,22 @@ enable_temp_nopasswd() {
     return 0
   fi
 
-  log "Enabling temporary NOPASSWD for current user."
-  echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee "$SUDOERS_TEMP_FILE" >/dev/null
+  # Use id -un, not $USER: $USER can be empty/wrong under su/cron/some shells,
+  # which would write a broken sudoers line and silently disable NOPASSWD,
+  # causing makepkg's internal sudo (yay build, AUR) to prompt for a password.
+  local user
+  user="$(id -un)"
+
+  log "Enabling temporary NOPASSWD for $user."
+  echo "$user ALL=(ALL) NOPASSWD:ALL" | sudo tee "$SUDOERS_TEMP_FILE" >/dev/null
   sudo chmod 440 "$SUDOERS_TEMP_FILE"
+  # Fail loudly if the rule doesn't actually take effect, instead of dying
+  # later on an unexpected password prompt mid-build.
+  if ! sudo -n true 2>/dev/null; then
+    echo "Temporary NOPASSWD rule did not take effect; aborting." >&2
+    sudo rm -f "$SUDOERS_TEMP_FILE"
+    exit 1
+  fi
   TEMP_NOPASSWD_ENABLED=1
 }
 
@@ -132,11 +145,14 @@ ensure_yay() {
     return 0
   fi
 
+  # yay-bin ships a prebuilt binary: no Go toolchain, no compile step, much
+  # faster than building yay from source. makepkg still calls sudo internally,
+  # which the temporary NOPASSWD rule (enable_temp_nopasswd) covers.
   local tmpdir
   tmpdir="$(mktemp -d)"
-  git clone https://aur.archlinux.org/yay.git "$tmpdir/yay"
-  pushd "$tmpdir/yay" >/dev/null
-  makepkg -si --noconfirm
+  git clone https://aur.archlinux.org/yay-bin.git "$tmpdir/yay-bin"
+  pushd "$tmpdir/yay-bin" >/dev/null
+  makepkg -si --noconfirm --needed
   popd >/dev/null
   rm -rf "$tmpdir"
 }

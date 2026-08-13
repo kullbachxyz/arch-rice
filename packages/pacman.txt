@@ -97,7 +97,7 @@ calibre
 syncthing
 newsboat
 python
-rofi
+j4-dmenu-desktop
 ripgrep
 brightnessctl
 slock

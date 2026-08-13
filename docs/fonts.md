@@ -1,6 +1,6 @@
 # Fonts — Lato everywhere except monospace
 
-MMD uses one UI typeface: **Lato**. Everything non-monospace is forced to Lato;
+One UI typeface: **Lato**. Everything non-monospace is forced to Lato;
 the terminal/monospace stays as-is.
 
 ## Files

@@ -1,42 +1,37 @@
 # Colour palette / tokens
 
-Single source of truth for colours: `~/.config/x11/xres-{light,dark}` (Xresources),
-consumed by st, dmenu, dwm. Every other app mirrors these values.
+The desktop runs stock dark themes. There is no single cross-app palette; each
+layer uses its own upstream scheme.
 
-## MMD reference tokens
+## Terminal (st)
+Gruvbox dark, loaded from Xresources at `~/.config/x11/resources`
+(`xrdb -merge` at login in `.xinitrc`). Only st reads this file — it consumes
+`*.foreground` / `*.background`, `*.color0..15`, and `*.alpha` (0.8). st reloads
+colours + alpha live on `pkill -USR1 -x st`.
 
-| Token | Light | Dark |
-|-------|-------|------|
-| background | `#ffffff` | `#000000` |
-| foreground (ink) | `#000000` | `#ffffff` |
-| border / divider | `#cccccc` | `#444444` |
-| muted | `#999999` | `#b0b0b0` |
-| code / inset bg | `#f2f2f2` | `#141414` |
-| selection | inverted: **ink bar, paper text** | inverted / grey `#505050` (GTK) |
+Gruvbox dark: bg `#282828`, fg `#ebdbb2`. Accents — red `#cc241d` green `#98971a`
+yellow `#d79921` blue `#458588` magenta `#b16286` cyan `#689d6a`; bright red
+`#fb4934` green `#b8bb26` yellow `#fabd2f` blue `#83a598` magenta `#d3869b`
+cyan `#8ec07c`. (A pure-monochrome preset is kept commented in the file.)
 
-- **dwm / dmenu / rofi:** selection = full inversion (paper-on-ink light,
-  ink-on-paper dark), border `#ccc`/`#444`, focused window border = ink/paper.
-- **GTK dark selection** is grey `#505050` + white text, not a white bar — see
-  `gotchas.md` (GTK has no `!important`, the base theme paints selected text white).
+## dwm / dmenu
+Standard suckless **gray + blue**, compiled into each `config.h` — they ignore
+Xresources (optional `dwm.*` / `dmenu.*` overrides are not set, so the compiled
+values win):
+- normal: fg `#bbbbbb`, bg `#222222`, border `#444444`.
+- selected / focused: fg `#eeeeee`, bg/border `#005577` (blue).
 
-## Terminal (st) — two palettes
+## GTK / Qt
+- GTK: stock **Adwaita-dark** (see `gtk.md`).
+- Qt: **Fusion** + stock `darker.conf` scheme (see `qt.md`).
 
-1. **Grayscale (default in xres):** neutral grey ramp — so with the shader OFF the
-   terminal is still monochrome MMD.  *(historical; replaced below)*
-2. **Selenized (current):** a real colourful palette so that with the **shader off**
-   the terminal has usable colour, and with the **shader on** it greys to MMD.
-   - Light = **Selenized white** on `#fff`, Dark = **Selenized black** on `#000`.
-   - Only `st.color0..15` differ; dwm/dmenu/rofi stay monochrome.
-   - Accents are the official Selenized values; greys tuned for pure `#000`/`#fff`.
-
-Selenized dark accents: red `#ed4a46` green `#70b433` yellow `#dbb32d`
-blue `#368aeb` magenta `#eb6eb7` cyan `#3fc5b7`.
-Selenized light accents: red `#d6000c` green `#1d9700` yellow `#c49700`
-blue `#0064e4` magenta `#dd0f9d` cyan `#00ad9c`.
+## rofi / dunst
+- rofi: neutral dark grey theme `~/.config/rofi/dark.rasi` — bg `#1c1c1c`,
+  fg `#e0e0e0`, selection `#3a3a3a`, 3px border `#666666` (see `apps.md`).
+- dunst: bg `#222222`, fg `#e0e0e0`, frame `#444444`; critical urgency frame
+  red `#cc241d`.
 
 ## Typography
-
 - UI everywhere: **Lato** (forced via fontconfig, see `fonts.md`).
-- Terminal / monospace: **IBM Plex Mono** (humanist mono that pairs with Lato; monospace so columns align).
-- dwm bar: `IBM Plex Mono:size=12` (same monospace as st, for a consistent
-  bar↔terminal look); dmenu: `Lato:size=14`.
+- Terminal / monospace: **IBM Plex Mono**.
+- dwm bar: `IBM Plex Mono:size=12` (matches st); dmenu: `Lato:size=14`.

@@ -1,19 +1,28 @@
 # arch-rice
 
-Post-install setup for Arch Linux with X + dwm, themed as a monochrome, e-ink-friendly
-(MMD) dark desktop. Repos are mirrored on GitHub (`github.com/kullbachxyz`).
+Post-install setup for Arch Linux with X + dwm, themed as a neutral dark desktop.
+Repos are mirrored on GitHub (`github.com/kullbachxyz`).
 
 Assumes a base system installed via `archinstall`, which already handles the
 bootloader, disk/EFI setup, locale, timezone, hostname and NetworkManager.
 
 ## Structure
 
-- `install.sh` - installs packages, builds the suckless tools from source, sets up dotfiles, gnome-keyring PAM, and the MMD dark theme.
+- `install.sh` - installs packages, builds the suckless tools from source, sets up dotfiles and gnome-keyring PAM.
 - `packages/pacman.txt` - official repo packages.
 - `packages/aur.txt` - AUR packages.
-- `scripts/` - `check-installed.sh` plus the MMD theme generators (GTK theme, inverted icons, Element theme).
-- `theme-assets/` - browser-profile theming injected by `install.sh` (Thunderbird/LibreWolf chrome, Chromium manifests) — these can't live in dotfiles since profile paths are per-machine.
-- `docs/` - the MMD theme docs (palette, gtk, qt, suckless, shader, fonts, browsers, apps, gotchas) plus hibernate and gnome-keyring guides.
+- `scripts/` - `check-installed.sh`.
+- `theme-assets/` - the per-machine Thunderbird dark pref injected by `install.sh` (profile path can't live in dotfiles).
+- `docs/` - theme docs (palette, gtk, qt, suckless, fonts, browsers, apps, gotchas) plus hibernate and gnome-keyring guides.
+
+## Theme
+
+Dark, using stock themes — no custom theme to build:
+
+- **st** — Gruvbox dark (Xresources, `~/.config/x11/resources`)
+- **dwm / dmenu** — standard gray + blue, compiled in
+- **GTK** — Adwaita-dark (dotfiles gtk settings + xsettingsd)
+- **Qt** — Fusion + stock `darker.conf` (dotfiles qtXct)
 
 ## What install.sh does
 
@@ -23,7 +32,7 @@ bootloader, disk/EFI setup, locale, timezone, hostname and NetworkManager.
 4. Clones dotfiles bare repo to `~/.dotfiles`
 5. Configures PAM for gnome-keyring auto-unlock
 6. Masks user services that are started manually via `.xinitrc`
-7. Generates the MMD dark GTK theme + inverted icons and injects browser theming
+7. Sets the Thunderbird dark pref
 8. Sets zsh as default shell
 
 ## Not covered (manual / hardware-specific)
@@ -52,12 +61,12 @@ Check installed packages only:
 
 ## Docs
 
-MMD dark theme:
+Theme:
 
 - [Palette / design tokens](docs/palette.md)
 - [GTK theme](docs/gtk.md) · [Qt theme](docs/qt.md)
 - [suckless (st/dmenu/dwm patches)](docs/suckless.md)
-- [E-ink shader](docs/shader.md) · [Fonts](docs/fonts.md)
+- [Fonts](docs/fonts.md)
 - [Browsers](docs/browsers.md) · [Apps](docs/apps.md) · [Gotchas](docs/gotchas.md)
 
 System:

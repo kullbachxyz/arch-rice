@@ -13,9 +13,8 @@ linked repos) and the tools are `sudo make install`-ed.
 
 ## What matters for the theme system
 
-The patch *this project* relies on is an **xresources / xrdb** patch on each tool
-(the `epaper-theme-xresources` patch in the linked repos). It makes st/dmenu/dwm read
-their colours from Xresources:
+The patch *this project* relies on is an **xresources / xrdb** patch on each tool.
+It makes st/dmenu/dwm read their colours from Xresources:
 
 - **st** — xresources loader + **SIGUSR1 reload** (`config_init()` in `x.c`,
   `resources[]` in `config.h`); `pkill -USR1 -x st` re-reads xrdb → live recolour.

@@ -311,37 +311,14 @@ mask_user_services() {
 
 
 setup_theme() {
-  # Generate the derived MMD dark assets (not stored in git; see docs/gtk.md).
-  # Configs themselves live in dotfiles; only generated output is built here.
-  if [[ -x "$ROOT_DIR/scripts/build-mmd-dark-gtk.sh" ]]; then
-    log "Building MMD-Dark GTK theme -> ~/.themes/MMD-Dark"
-    sh "$ROOT_DIR/scripts/build-mmd-dark-gtk.sh" || log "GTK theme build failed (non-fatal)."
-  fi
-  if [[ -x "$ROOT_DIR/scripts/generate-icons.sh" ]]; then
-    log "Generating HighContrastInverse icon theme"
-    sh "$ROOT_DIR/scripts/generate-icons.sh" || log "Icon generation failed (non-fatal)."
-  fi
-
-  # Inject browser-profile theming (profile dirs are per-machine -> can't live
-  # in dotfiles). Thunderbird + LibreWolf userChrome/userContent.
-  local assets="$ROOT_DIR/theme-assets"
-
+  # GTK uses stock Adwaita-dark (dotfiles gtk settings + xsettingsd); Qt uses the
+  # stock darker.conf (dotfiles qtXct). Nothing to build. Only Thunderbird needs a
+  # per-machine pref to force its dark UI (profile path can't live in dotfiles).
   for prof in "$HOME"/.thunderbird/*.default-release "$HOME"/.thunderbird/*.default; do
     [[ -d "$prof" ]] || continue
-    log "Injecting Thunderbird MMD theme -> $prof"
-    mkdir -p "$prof/chrome"
-    cp "$assets"/thunderbird/chrome/*.css "$prof/chrome/" 2>/dev/null || true
-    cp "$assets"/thunderbird/user.js "$prof/user.js" 2>/dev/null || true
+    log "Setting Thunderbird dark pref -> $prof"
+    cp "$ROOT_DIR/theme-assets/thunderbird/user.js" "$prof/user.js" 2>/dev/null || true
   done
-
-  for prof in "$HOME"/.librewolf/*.default*; do
-    [[ -d "$prof" ]] || continue
-    log "Injecting LibreWolf MMD theme -> $prof"
-    mkdir -p "$prof/chrome"
-    cp "$assets"/librewolf/chrome/*.css "$prof/chrome/" 2>/dev/null || true
-  done
-
-  log "Chromium theme manifests: load manually from $assets/chromium-themes (see docs/browsers.md)."
 }
 
 set_default_shell() {
